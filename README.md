@@ -5,6 +5,11 @@
 - ByteBuddy
 
 ### What will the project do?
+ByteBuddy is a versatile programming assistance application designed to empower students in
+their coding endeavors. The application enables students to create chat rooms where they can
+seek assistance, collaborate, and receive guidance on their programming and coding projects.
+What sets ByteBuddy apart is its integrated code editing and execution capabilities, allowing
+students to write, edit, and run code seamlessly within the application.
 
 ### Who will benefit from this project?
 - Enhanced Learning: Students can learn and practice coding collaboratively, improving their problem-solving skills and code quality through peer review. 
