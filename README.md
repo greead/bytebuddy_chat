@@ -17,14 +17,20 @@ students to write, edit, and run code seamlessly within the application.
 - Instructor Feedback: Instructors can monitor student progress, offer guidance, and provide timely feedback. 
 - Coding Portfolio: Users can build a portfolio of coding projects, which can be valuable for showcasing their skills to potential employers. 
 - Community Building: The platform fosters a sense of community among computer science students, encouraging knowledge sharing and collaboration. 
+
 ### What data will be saved in database?
--User and it's authentication information.
--chatroom and the user to which it belongs
--connection to code editor and the code
--text messages
--emojis
+- User and it's authentication information.
+- Chat room and the user to which it belongs
+- Connection to code editor and the code
+- Text messages
+- Emojis
+
 ### What will be the easiest part of this project?
--chat messages between the tutor and the student.
--Sending notification of the text or any other data that user will receive
--Interacting with other fellow student within the application.
+- Chat messages between the tutor and the student.
+- Sending notifications of the messages updates
+- Interacting with other students within the application.
+
 ### What will be the most difficult part of this project?
+- Embedding the code editor
+- Running the user code and/or returning results
+- Allowing everyone in the chat room to see changes in editor in realtime
