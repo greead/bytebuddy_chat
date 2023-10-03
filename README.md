@@ -1,5 +1,11 @@
 ## ACS-560 Software Engineering
 
+## Members:
+- James Elliott
+- Alekzander Green
+- Aakansha Arora
+- Khoa Nguyen
+
 ### Project Name
 
 - ByteBuddy: the Coding Chatroom
