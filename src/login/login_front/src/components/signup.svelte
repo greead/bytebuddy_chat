@@ -1,39 +1,39 @@
+<!-- Svelte component representing the Signup page -->
 <script>
+    // Imports
     import {user} from "./store.js"
-    // var email;
-    // var password;
+
+    /**
+     * Event handler for the form submit event, makes an api call to the signup api using
+     * the information given in the form inputs.
+     * @param event The event caller
+    */
     async function handleForm(event){
         event.preventDefault();
-        // user.set({
-        //     email,
-        //     password});
         console.log($user)
         try{
-            
+            // Make a POST request to the signup api by passing the user object in the store
             const reponse = await fetch('http://127.0.0.1:8000/api/signup', {
                 method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json',
-                },
-                // something is wrong with user- it has 
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify($user),
             });
             
-            if(reponse.ok){
-                console.log('Sign up succesfully');
-            }
-            else{
+            if(reponse.ok) {
+                console.log('Sign up succesful');
+            } else {
                 const error = await reponse.json();
                 console.error(error.message);
             }
-        }
-        catch(error){
+        } catch(error){
             console.error(error);
         }
     }
 </script>
 
 <h1>ByteBuddy Signup</h1>
+
+<!-- Form for signup information -->
 <form on:submit={handleForm}>
     <lable for="email">Email: </lable>
     <input bind:value={$user.email} type="text" id="email" name="email" style="input_item"><br>
@@ -45,6 +45,7 @@
 </form>
 
 <style>
+
     form{
         display: flex;
         flex-direction: column;

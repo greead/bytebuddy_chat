@@ -1,4 +1,9 @@
 <script>
+  /**
+   * Main svelte component for the login app
+   * Responsible for showing and swapping between different user/auth pages
+   * Pages: Signup, Login
+  */
   import Signup from "./components/signup.svelte";
 </script>
 
@@ -7,7 +12,10 @@
 </main>
 
 <style>
-  /* .logo {
+  /* 
+  Styles commented out for potential future use 
+
+  .logo {
     height: 6em;
     padding: 1.5em;
     will-change: filter;
