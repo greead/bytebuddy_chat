@@ -2,9 +2,9 @@ from rest_framework.routers import DefaultRouter
 from django.urls import path,include
 from .views import SignupView
 
-# router = DefaultRouter()
-# router.register(r"signup",SignupView,basename="SignUp")
 
+# URL Patterns for the Login app
 urlpatterns = [
-    path('api/signup',SignupView.as_view()),
+    # Sign-up page
+    path('api/signup', SignupView.as_view()),
 ]

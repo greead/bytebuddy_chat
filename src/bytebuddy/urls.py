@@ -18,6 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    # Admin routes
     path('admin/', admin.site.urls),
+
+    # Login app routes
     path('', include('login.urls')),
+
+    # Chat app routes
+    
 ]
