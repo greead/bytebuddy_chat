@@ -4,11 +4,28 @@
    * Responsible for showing and swapping between different user/auth pages
    * Pages: Signup, Login
   */
+  import {Router, Route, Link} from 'svelte-routing';
   import Signup from "./components/signup.svelte";
+  import Login from "./components/login.svelte";
+  import Logout from "./components/logout.svelte"
+
+  export let url="";
 </script>
 
+<!-- Trying out router for nav bar later -->
+<Router {url}>
+  <nav>
+    <Link to="/">Login</Link>
+    <Link to="/signup">Signup</Link>
+  </nav>
+  <div>
+    <Route path="/signup" component={Signup} />
+    <Route path="/"><Login /></Route>
+  </div>
+</Router>
+
 <main>
-  <Signup/>
+  
 </main>
 
 <style>
