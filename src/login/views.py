@@ -62,8 +62,12 @@ class SignupView(APIView):
             Response: The response to return to the user.
         """
         serializer = UserSerializer(data=request.data)
+        if request.data.get('password') != request.data.get('confirmPw'):
+            return Response({'error':'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
         
+        # print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

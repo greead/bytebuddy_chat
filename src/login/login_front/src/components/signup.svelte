@@ -1,8 +1,9 @@
 <!-- Svelte component representing the Signup page -->
 <script>
     // Imports
-    import {user} from "./store.js"
+    import {signupUser} from "./store.js"
     import {Link} from "svelte-routing";
+    let signupError = null
 
     /**
      * Event handler for the form submit event, makes an api call to the signup api using
@@ -17,14 +18,25 @@
             const reponse = await fetch('http://127.0.0.1:8000/api/signup', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify($user),
+                body: JSON.stringify($signupUser),
             });
             
             if(reponse.ok) {
+                signupError= null;
                 console.log('Sign up succesful');
+                window.location.href='/login';
             } else {
                 const error = await reponse.json();
-                console.error(error.message);
+                console.error(error)
+                signupError = error[0]
+                if(error.error === "Passwords do not match"){
+                    signupError = error.error;
+                }
+
+                if(signupError === 'UNIQUE constraint failed: auth_user.username'){
+                    signupError = 'Email has already been taken. Please log in if you already have an account'
+                }
+                console.log(signupError)
             }
         } catch(error){
             console.error(error);
@@ -47,20 +59,24 @@
     <h1>ByteBuddy</h1>
 </Link>
 <h4>Sign up and make friends</h4>
+{#if signupError}
+    <div class="error-message">{signupError}</div>
+{/if}
+
 <!-- Form for signup information -->
 <form on:submit={handleForm}>
     <div id="flexBox">
         <div class="idky">
             <lable for="email">Email: </lable>
-            <input bind:value={$user.email} type="text" id="email" name="email" style="input_item">
+            <input bind:value={$signupUser.email} type="text" id="email" name="email" style="input_item">
         </div>
         <div class="idky">
             <lable for="pw">Password: </lable>
-            <input bind:value={$user.password} type="password" id="pw" name="pw">
+            <input bind:value={$signupUser.password} type="password" id="pw" name="pw">
         </div>
         <div class="idky">
             <lable for="cpw">Confirm Password: </lable>
-            <input type="password" id="cpw" name="cpw">
+            <input bind:value={$signupUser.confirmPw} type="password" id="cpw" name="cpw">
         </div>
     </div>
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -132,5 +148,13 @@
     h2 {
         font-size: 3em;
     }
+
+    .error-message{
+        font-family: "VT323";
+        font-size:2em;
+        color:red;
+
+    }
+
 
 </style>

@@ -2,7 +2,7 @@
 //  Imports
     import {user} from "./store.js"
     import {Link} from 'svelte-routing';
-    
+    let loginError = null
     /**
      * Event handler for the form submit event, makes an api call to the login api using
      * the information given in the form inputs.
@@ -20,10 +20,13 @@
             });
             
             if(reponse.ok) {
+                loginError=null
                 console.log('Log in succesfully');
+                window.location.href='/';
             } else {
                 const error = await reponse.json();
-                console.error(error.message);
+                console.error(error);
+                loginError = error['non_field_errors'][0];
             }
         } catch(error){
             console.error(error);
@@ -66,6 +69,10 @@
 </Link>
 <h4>Log into your community</h4>
 <!-- Form for signup information -->
+{#if loginError}
+    <div class="error-message">{loginError}</div>
+{/if}
+
 <form on:submit={handleForm}>
     <div id="flexBox">
         <div class="idky">
@@ -147,6 +154,11 @@
         font-size: 3em;
     }
 
+    .error-message{
+        font-family: "VT323";
+        font-size:2em;
+        color:red;
 
+    }
 
 </style>

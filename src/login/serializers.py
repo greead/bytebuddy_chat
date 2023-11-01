@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from django.db import IntegrityError
 
 class UserSerializer(serializers.ModelSerializer):
+    
     """
     Serializer for serializing user objects based on the default User model.
     """
@@ -15,19 +17,22 @@ class UserSerializer(serializers.ModelSerializer):
         Returns:
             User: The new User object that was just created
         """
-        user = User.objects.create_user(
-            username=validated_data['email'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-        )
-        return user
-    
+        try:
+            user = User.objects.create_user(
+                username=validated_data['email'],
+                email=validated_data['email'],
+                password=validated_data['password'],
+            )
+            return user
+        except IntegrityError as e:
+            raise serializers.ValidationError(str(e))
+        
     class Meta:
         """
         Metadata inner class to support the serializer
         """
         model = User
-        fields = ("email", "password" )
+        fields = ("email", "password")
 
 class LoginSerializer(serializers.ModelSerializer):
     
