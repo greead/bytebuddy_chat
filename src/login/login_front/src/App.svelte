@@ -8,28 +8,37 @@
   import Signup from "./components/signup.svelte";
   import Login from "./components/login.svelte";
   import Logout from "./components/logout.svelte"
-
+  import Landing from "./components/landing.svelte"
   export let url="";
 </script>
 
+<svelte:head>
+  <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Rubik+Pixels" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/y-grid" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/phatone" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/mastodontus" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/zuber-future" rel="stylesheet">          
+</svelte:head>
+
 <!-- Trying out router for nav bar later -->
 <Router {url}>
-  <nav>
+  <!-- <nav>
     <Link to="/">Login</Link>
     <Link to="/signup">Signup</Link>
-  </nav>
-  <div>
+  </nav> -->
     <Route path="/signup" component={Signup} />
-    <Route path="/"><Login /></Route>
-  </div>
+    <Route path="/" component={Landing} />
+    <Route path="/login" component={Login} />
 </Router>
 
 <main>
-  
+  <!-- svelte-ignore a11y-<code> -->
 </main>
 
 <style>
-  /* 
+
+/*   
   Styles commented out for potential future use 
 
   .logo {
@@ -47,4 +56,5 @@
   .read-the-docs {
     color: #888;
   } */
+
 </style>

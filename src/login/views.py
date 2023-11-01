@@ -36,6 +36,7 @@ class LoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
+    # weirdly, it I use IsAuthenticated, it will not work
     # permission_classes = [permissions.IsAuthenticated]
     
     def post(self, request):
