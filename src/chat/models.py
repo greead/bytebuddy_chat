@@ -4,6 +4,17 @@ from django.db import models
 class ChatRoom(models.Model):
     name = models.CharField(max_length=128)
     online = models.ManyToManyField(to=User, blank=True)
+    
+    #chatRoomId = models.PositiveIntegerField()
+    #roomName = models.CharField(max_length=255) 
+    #description = models.TextField(max_length=200, blank=True, null=True)
+    #replitLink = models.URLField()
+    #isPublic =  models.BooleanField(default=False)
+    #created = models.TimeField()
+    #lastUpdate = models.TimeField()
+    #ownerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_chatrooms") 
+    #memberID = models.ManyToManyField(User,related_name="chatrooms")
+    
 
     def get_online_count(self):
         return self.online.count()
