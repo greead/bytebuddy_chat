@@ -1,0 +1,6 @@
+Django==3.2.5
+djangorestframework==3.14.0
+daphne==4.0.0
+Pillow==10.1.0
+django-cors-headers==4.3.0
+requests==2.25.1
