@@ -43,7 +43,7 @@
         text-align: left;
     }
     .messageArea {
-        width: auto;
+        width: 100%;
         height: 10em;
         border: 1px solid #333;
         padding: 8px 0px;
@@ -51,6 +51,7 @@
     }
     .messageBox {
         width: 30em;
+        margin-top: 4px;
     }
     .textBox {
         height: 2em;

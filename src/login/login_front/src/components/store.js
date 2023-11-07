@@ -29,14 +29,26 @@ const messageStore = writable('')
  * Svelte store item for ChatConsumer WebSocket
  */
 let sock = null;
-const openSocket = (socketURL) => {
-    sock.close()
-    const socket = new WebSocket(socketURL)
+const openSocket = (roomName) => {
+    if (sock != null) {
+        sock.close()
+    }
+    console.log("Connecting to: " + "ws://" + window.location.host + "/ws/chat/" + roomName + "/")
+    const socket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/")
 
     // Connection opened
     socket.addEventListener('open', function (event) {
-        console.log("It's open");
+        console.log("Successfully connected to the WebSocket.");
     });
+
+    // Connection closed
+    socket.onclose = function(e) {
+        console.log("WebSocket connection closed unexpectedly. Trying to reconnect in 2s...");
+        setTimeout(function() {
+            console.log("Reconnecting...");
+            // TODO connect();
+        }, 2000);
+    };
 
     // Listen for messages
     socket.addEventListener('message', function (event) {
