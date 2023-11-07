@@ -1,7 +1,7 @@
 <script>
 //  Imports
     import {user} from "./store.js"
-    import {Link} from 'svelte-routing';
+    import {Link, navigate} from 'svelte-routing';
     let loginError = null
     /**
      * Event handler for the form submit event, makes an api call to the login api using
@@ -22,7 +22,8 @@
             if(reponse.ok) {
                 loginError=null
                 console.log('Log in succesfully');
-                window.location.href='/';
+                // window.location.href='/';
+                navigate('/chat')
             } else {
                 const error = await reponse.json();
                 console.error(error);

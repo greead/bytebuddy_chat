@@ -9,6 +9,7 @@
   import Login from "./components/login.svelte";
   import Logout from "./components/logout.svelte"
   import Landing from "./components/landing.svelte"
+  import ChatApp from './components/chat_app.svelte';
   export let url="";
 </script>
 
@@ -30,6 +31,7 @@
     <Route path="/signup" component={Signup} />
     <Route path="/" component={Landing} />
     <Route path="/login" component={Login} />
+    <Route path="/chat" component={ChatApp} />
 </Router>
 
 <main>
