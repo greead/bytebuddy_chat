@@ -24,6 +24,13 @@
     }
 </script>
 
-<Link to="/">
-    <button on:click={handleLogout}>Logout</button>
-</Link>
+<div>
+    <Link to="/">
+        <button on:click={handleLogout}>Logout</button>
+    </Link>
+</div>
+
+
+<style>
+
+</style>
