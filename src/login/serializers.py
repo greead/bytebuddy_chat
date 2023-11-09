@@ -42,12 +42,8 @@ class LoginSerializer(serializers.ModelSerializer):
         password = data.get('password')
 
         if username and password:
-            # Link: https://docs.djangoproject.com/en/4.2/topics/auth/default/#django.contrib.auth.views.LoginView
-            # Basically, either use LoginView or authenticate()
-            # authenticate() is a low-level method used for custom login/ authentication
-            user = authenticate(username= username, password= password)
+            user = authenticate(username=username, password=password)
             if not user:
-                # If we don't have a regular user, raise a ValidationError
                 msg = 'Access denied: wrong username or password.'
                 raise serializers.ValidationError(msg, code='authorization')
         else:

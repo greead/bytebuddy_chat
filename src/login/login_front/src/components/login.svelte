@@ -1,8 +1,20 @@
 <script>
 //  Imports
-    import {user} from "./store.js"
+    import {user, csrftoken, sessionid} from "./store.js"
     import {Link, navigate} from 'svelte-routing';
+    import {login, cookies} from "./utils.js"
+    import { getCookie } from "svelte-cookie";
     let loginError = null
+    let csrf;
+    let sid;
+    
+    csrftoken.subscribe((value) => {
+        csrf = value
+    })
+
+    sessionid.subscribe((value) => {
+        sid = value
+    })
     /**
      * Event handler for the form submit event, makes an api call to the login api using
      * the information given in the form inputs.
@@ -13,39 +25,41 @@
         // console.log($user)
         try{
             // Make a POST request to the signup api by passing the user object in the store
-            const reponse = await fetch('http://127.0.0.1:8000/api/login', {
-                method: 'POST',
+            const response1 = await fetch('http://localhost:8000/api/csrf', {
+                method: 'GET',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify($user),
+                
             });
-            
-            if(reponse.ok) {
+
+            console.log(cookies())
+            csrftoken.set(response1.headers.get('X-CSRFToken'))
+
+            const response = await fetch('http://localhost:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify($user),
+                credentials: 'include'
+            });
+
+            csrftoken.set(response.headers.get('X-CSRFToken'))
+            console.log(await response1.text())
+            console.log(response.headers.getSetCookie())
+            console.log(await response.text())
+
+            console.log(cookies())
+
+            if(response.ok) {
+                
                 loginError=null
                 console.log('Log in succesfully');
                 // window.location.href='/';
                 navigate('/chat')
             } else {
-                const error = await reponse.json();
+                const error = await response.json();
                 console.error(error);
                 loginError = error['non_field_errors'][0];
-            }
-        } catch(error){
-            console.error(error);
-        }
-    }
-
-    async function signOut(event){
-        event.preventDefault;
-        try{
-            const response = await fetch('http://127.0.0.1:8000/api/logout', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-            });
-            if(response.ok) {
-                console.log('Log out succesfully');
-            } else {
-                const error = await response.json();
-                console.error(error.message);
             }
         } catch(error){
             console.error(error);

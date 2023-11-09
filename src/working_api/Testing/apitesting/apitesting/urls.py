@@ -1,5 +1,5 @@
 """
-URL configuration for bytebuddy project.
+URL configuration for apitesting project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -16,16 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.authtoken import views
 
 urlpatterns = [
-    # Admin routes
     path('admin/', admin.site.urls),
-
-    # Login app routes
-    path('', include('login.urls')),
-    path('api-token-auth', views.obtain_auth_token),
-    path('ch', include('chat.urls'))
-    # Chat app routes
-    
+    path('api/', include('api.urls')),
 ]

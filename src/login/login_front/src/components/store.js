@@ -1,7 +1,7 @@
 /**
  * Svelte store for shared/stored information
  */
-import { writable } from "svelte/store";
+import { readable, writable } from "svelte/store";
 
 /**
  * Svelte store item representing a user
@@ -25,6 +25,9 @@ export const signupUser = writable({
  */
 const messageStore = writable('')
 
+export const csrftoken = writable('')
+export const sessionid = writable('')
+
 /**
  * Svelte store item for ChatConsumer WebSocket
  */
@@ -33,7 +36,7 @@ const openSocket = (roomName) => {
     if (sock != null) {
         sock.close()
     }
-    console.log("Connecting to: " + "ws://" + window.location.host + "/ws/chat/" + roomName + "/")
+    console.log("Connecting to: " + "ws://" + "127.0.0.1:8000" + "/ws/chat/" + roomName + "/")
     const socket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/")
 
     // Connection opened

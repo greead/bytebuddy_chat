@@ -1,66 +1,54 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+import json
+from django.http import JsonResponse, HttpRequest, HttpResponse
 from rest_framework.views import APIView
-from django.contrib.auth.models import User
 from .serializers import UserSerializer, LoginSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from rest_framework import authentication
-from django.contrib.auth import login, logout
-# from django.shortcuts import render, redirectx
+from rest_framework.authentication import SessionAuthentication
+from django.contrib.auth import login, logout, authenticate
+from django.middleware.csrf import get_token
 
+# Get CSRF token
+def get_csrf(request):
+    response = JsonResponse({'detail': 'CSRF cookie set'})
+    response['X-CSRFToken'] = get_token(request)
+    return response
 
 class LoginView(APIView):
-
-    # Link: https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
-    # generates a unique token associated the user if log in successfully
-    # TODO: need to test this with a curl or POSTMAN (like I want to see if it does generate a unique token) 
-    authentication_classes = [authentication.TokenAuthentication]
-    
-    # This view should be accessible also for unauthenticated users.
+    authentication_classes = [SessionAuthentication]
     permission_classes = [permissions.AllowAny]
-    
-    def post(self, request):
-        #calls upon authenticate method in LoginSerializer
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            #if user is authenticated, it will return a User object
-            user = serializer.validated_data['user']
-            #login will use this user object to create a session for that user
-            #this session is associated with a session cookie stored on the user's browser, which is used to identify the user in subsequent requests.
-            #also update user's fields like last_login, IP address, etc
-            login(request, user)
-            return Response(None, status=status.HTTP_202_ACCEPTED)
-        print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request: HttpRequest):
+        data = json.loads(request.body)
+        username = data['email']
+        password = data['password']
+
+        if username is None or password is None:
+            return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is None:
+            return JsonResponse({'detail': 'Invalid credentials.'}, status=400)
+
+        login(request, user)
+        response = Response({'detail': 'Successfully logged in.'})
+        return response
 
 class LogoutView(APIView):
-    # weirdly, it I use IsAuthenticated, it will not work
-    # permission_classes = [permissions.IsAuthenticated]
-    
-    def post(self, request):
-        # a pair with login method
+    def post(self, request: HttpRequest):
+        print(request.user)
+        if not request.user.is_authenticated:
+            return JsonResponse({'detail': 'You\'re not logged in.'}, status=400)
+
         logout(request)
-        return Response(None, status=status.HTTP_202_ACCEPTED)
+        return JsonResponse({'detail': 'Successfully logged out.'})
     
 class SignupView(APIView):
-    """
-    View for the sign-up page's API endpoint.
-    """
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        """POST method for the sign-up page to "call" when a user attempts to create an account
-        
-        Checks if the request is valid, then creates a new user in the database.
-
-        Args:
-            request: The request details.
-
-        Returns:
-            Response: The response to return to the user.
-        """
         serializer = UserSerializer(data=request.data)
         if request.data.get('password') != request.data.get('confirmPw'):
             return Response({'error':'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
