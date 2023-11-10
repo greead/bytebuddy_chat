@@ -1,4 +1,3 @@
-Svelte component representing the Signup page
 <script>
     // // Imports
     // import {signupUser} from "./store.js"
