@@ -1,31 +1,21 @@
 <script>
     import {Link, navigate} from 'svelte-routing';
-    import {user, csrftoken ,sessionid} from "./store.js";
+    import {sessionid} from "./store.js";
     import { getCookie } from 'svelte-cookie'
     import { get } from 'svelte/store';
     let loginError = null
-    let csrf;
-    let sid;
-
-    sessionid.subscribe((value) => {
-        sid = value
-    })
-
-    csrftoken.subscribe((value) => {
-        csrf = value
-    })
 
     async function handleLogout(event) {
         console.log(getCookie('sessionid'))
         console.log(getCookie('csrftoken'))
         console.log(getCookie('X-CSRFToken'))
-        console.log(csrf)
+        // console.log(csrf)
         try {
             const reponse = await fetch('http://127.0.0.1:8000/api/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrf,
+                    // 'X-CSRFToken': csrf,
                 },
                 body: JSON.stringify({
                     "sessionid": getCookie('sessionid')

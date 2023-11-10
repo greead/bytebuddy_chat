@@ -1,12 +1,11 @@
 from django.urls import path
-from . import views as v
 
+from . import views
 
-# URL Patterns for the Login app
 urlpatterns = [
-    # Sign-up page
-    path('api/signup', v.SignupView.as_view()),
-    path('api/login', v.LoginView.as_view()),
-    path('api/logout', v.LogoutView.as_view()),
-    path('api/csrf', v.get_csrf)
+    path('csrf/', views.get_csrf, name='api-csrf'),
+    path('login/', views.login_view, name='api-login'),
+    path('logout/', views.logout_view, name='api-logout'),
+    path('session/', views.session_view, name='api-session'),
+    # path('whoami/', views.whoami_view, name='api-whoami'),
 ]

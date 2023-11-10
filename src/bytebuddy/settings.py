@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +26,6 @@ SECRET_KEY = 'django-insecure-d=qzc2pog9#-(vywr2!rv^_&w+r*(tdtxyhn0&(b=6$+h7nex-
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 
 # Application definition
@@ -47,35 +44,6 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
-# Django REST Framework Configurations
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-}
-
-
-# Cookie/Session Configurations
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_HTTPONLY = False
-CSRF_TRUSTED_ORIGINS = ['localhost:5173']
-
-# CORS Configurations
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-]
-CORS_ALLOW_ALL_ORIGINS = True # Remove for production and enable the above
-CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
-CORS_ALLOW_CREDENTIALS = True
-
-ROOT_URLCONF = 'bytebuddy.urls'
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -88,6 +56,7 @@ MIDDLEWARE = [
     
 ]
 
+ROOT_URLCONF = 'bytebuddy.urls'
 
 TEMPLATES = [
     {
@@ -184,3 +153,20 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+
+# PROD ONLY
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_ALLOW_CREDENTIALS = True

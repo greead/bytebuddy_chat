@@ -1,10 +1,10 @@
 <script>
-    import store from "./store";
+    // import store from "./store";
 
     export let text = "Room";
 
     async function connectRoom() {
-        store.openSocket(text)
+        // store.openSocket(text)
     }
 
 </script>

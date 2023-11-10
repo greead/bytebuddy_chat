@@ -28,11 +28,13 @@
     <Link to="/">Login</Link>
     <Link to="/signup">Signup</Link>
   </nav> -->
-    <Route path="/signup" component={Signup} />
+    <Route path="/signup/" component={Signup} />
     <Route path="/" component={Landing} />
-    <Route path="/login" component={Login} />
-    <Route path="/chat" component={ChatApp} />
+    <Route path="/login/" component={Login} />
+    <Route path="/chat/" component={ChatApp} />
 </Router>
+
+<!-- <Login/> -->
 
 <main>
   <!-- svelte-ignore a11y-<code> -->

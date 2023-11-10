@@ -1,69 +1,36 @@
 <script>
 //  Imports
-    import {user, csrftoken, sessionid} from "./store.js"
+    import {username, password, data, page, csrf, handleCsrf} from "./store.js"
     import {Link, navigate} from 'svelte-routing';
     import {login, cookies} from "./utils.js"
     import { getCookie } from "svelte-cookie";
-    let loginError = null
-    let csrf;
-    let sid;
+    // let loginError = null
     
-    csrftoken.subscribe((value) => {
-        csrf = value
-    })
-
-    sessionid.subscribe((value) => {
-        sid = value
-    })
     /**
      * Event handler for the form submit event, makes an api call to the login api using
      * the information given in the form inputs.
      * @param event The event caller
     */
-    async function handleForm(event){
-        event.preventDefault();
-        // console.log($user)
-        try{
-            // Make a POST request to the signup api by passing the user object in the store
-            const response1 = await fetch('http://localhost:8000/api/csrf', {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-                
-            });
+    async function handleLogin(event) {
+        await handleCsrf()
+        console.log($csrf)
+        console.log('csrftoken:', $csrf)
+        let res = await fetch("http://localhost:8000/login/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": $csrf,
+            },
+            credentials: "include",
+            body: JSON.stringify({username: $username, password: $password}),
+        })
 
-            console.log(cookies())
-            csrftoken.set(response1.headers.get('X-CSRFToken'))
-
-            const response = await fetch('http://localhost:8000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify($user),
-                credentials: 'include'
-            });
-
-            csrftoken.set(response.headers.get('X-CSRFToken'))
-            console.log(await response1.text())
-            console.log(response.headers.getSetCookie())
-            console.log(await response.text())
-
-            console.log(cookies())
-
-            if(response.ok) {
-                
-                loginError=null
-                console.log('Log in succesfully');
-                // window.location.href='/';
-                navigate('/chat')
-            } else {
-                const error = await response.json();
-                console.error(error);
-                loginError = error['non_field_errors'][0];
-            }
-        } catch(error){
-            console.error(error);
+        if (res.ok) {
+            navigate('/')
         }
+        data.set(await res.text())
+        console.log($data)
+        // page.set('logout')
     }
 
     function hoverOver(event){
@@ -84,25 +51,24 @@
 </Link>
 <h4>Log into your community</h4>
 <!-- Form for signup information -->
-{#if loginError}
+<!-- {#if loginError}
     <div class="error-message">{loginError}</div>
-{/if}
+{/if} -->
 
-<form on:submit={handleForm}>
     <div id="flexBox">
         <div class="idky">
             <lable for="email">Email: </lable>
-            <input bind:value={$user.email} type="text" id="email" name="email" style="input_item">
+            <input bind:value={$username} type="text">
         </div>
         <div class="idky">
             <lable for="pw">Password: </lable>
-            <input bind:value={$user.password} type="password" id="pw" name="pw">
+            <input bind:value={$password} type="password">
         </div>
     </div>
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <input type="submit" id="button" value="Log in" on:mouseenter={hoverOver} on:mouseout={hoverOut}>
+    <button on:click={handleLogin} on:mouseenter={hoverOver} on:mouseout={hoverOut}>Login</button>
     <p>Haven't registered an account? Click <Link to="/signup"> here </Link> to sign up!</p>
-</form>
+
 
 <!-- <button on:click={signOut}>log out</button> -->
 <style>
@@ -169,11 +135,11 @@
         font-size: 3em;
     }
 
-    .error-message{
+    /* .error-message{
         font-family: "VT323";
         font-size:2em;
         color:red;
 
-    }
+    } */
 
 </style>

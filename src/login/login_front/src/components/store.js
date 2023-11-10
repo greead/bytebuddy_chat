@@ -1,77 +1,23 @@
-/**
- * Svelte store for shared/stored information
- */
-import { readable, writable } from "svelte/store";
+import { writable } from 'svelte/store';
 
-/**
- * Svelte store item representing a user
- */
-export const user = writable({
-    email:"testing@pfw.edu",
-    password:"123456",
-})
+export const csrf = writable('');
 
-/**
- * Svelte store item represeneting a user during signup
- */
-export const signupUser = writable({
-    email:"test@pfw.edu",
-    password:"123456",
-    confirmPw:"123456"
-})
+export const auth = writable(false);
 
-/**
- * Svelte store item for messages
- */
-const messageStore = writable('')
+export const sessionid = writable('');
 
-export const csrftoken = writable('')
-export const sessionid = writable('')
+export const username = writable('');
 
-/**
- * Svelte store item for ChatConsumer WebSocket
- */
-let sock = null;
-const openSocket = (roomName) => {
-    if (sock != null) {
-        sock.close()
-    }
-    console.log("Connecting to: " + "ws://" + "127.0.0.1:8000" + "/ws/chat/" + roomName + "/")
-    const socket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/")
+export const password = writable('')
 
-    // Connection opened
-    socket.addEventListener('open', function (event) {
-        console.log("Successfully connected to the WebSocket.");
-    });
+export const data = writable()
 
-    // Connection closed
-    socket.onclose = function(e) {
-        console.log("WebSocket connection closed unexpectedly. Trying to reconnect in 2s...");
-        setTimeout(function() {
-            console.log("Reconnecting...");
-            // TODO connect();
-        }, 2000);
-    };
+export const page = writable('login')
 
-    // Listen for messages
-    socket.addEventListener('message', function (event) {
-        messageStore.set(event.data);
-    });
-    sock = socket   
-}
+export async function handleCsrf(event) {
+    let res = await fetch("http://localhost:8000/csrf/", {
+        credentials: "include",
+    })
 
-const sendMessage = (message) => {
-    if (sock != null) {
-        if (sock.readyState <= 1) {
-            sock.send(message);
-        }
-    } else {
-        console.log("Socket not opened")
-    }
-    
-}
-
-export default {
-    subscribe: messageStore.subscribe,
-    sendMessage, openSocket
+    csrf.set(res.headers.get("X-CSRFToken"))
 }

@@ -1,20 +1,20 @@
 <script>
     import { onMount } from "svelte";
-    import store from "./store";
+    // import store from "./store";
 
     let messageList = []
     let inputMessage = ""
     
-    onMount (() => {
-        store.subscribe(currentMessage => {
-            messageList = [...messageList, currentMessage]
-        })
-    })
+    // onMount (() => {
+    //     store.subscribe(currentMessage => {
+    //         messageList = [...messageList, currentMessage]
+    //     })
+    // })
 
-    async function handleMessage(event) {
-        store.sendMessage(inputMessage)
-        inputMessage=""
-    }
+    // async function handleMessage(event) {
+    //     store.sendMessage(inputMessage)
+    //     inputMessage=""
+    // }
 </script>
 
 <div class="chatbox">
@@ -30,7 +30,7 @@
     
     <div id="messageBox" class="messageBox">
         <input bind:value={inputMessage} type="text" id="textBox" name="textBox" class="textBox">
-        <button on:click={handleMessage} class="submit">Send</button>
+        <!-- <button on:click={handleMessage} class="submit">Send</button> -->
     </div>
 </div>
 
