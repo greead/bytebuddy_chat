@@ -4,12 +4,12 @@
    * Responsible for showing and swapping between different user/auth pages
    * Pages: Signup, Login
   */
-  import {Router, Route, Link} from 'svelte-routing';
-  import Signup from "./components/signup.svelte";
-  import Login from "./components/login.svelte";
-  import Logout from "./components/logout.svelte"
-  import Landing from "./components/landing.svelte"
-  import ChatApp from './components/chat_app.svelte';
+  import {Router, Route} from 'svelte-routing';
+  import Signup from "./components/auth/signup.svelte";
+  import Login from "./components/auth/login.svelte";
+  import Logout from "./components/auth/logout.svelte"
+  import Landing from "./components/auth/landing.svelte"
+  import ChatApp from './components/chat/chat_app.svelte';
   export let url="";
 </script>
 
@@ -19,7 +19,8 @@
   <link href="https://fonts.cdnfonts.com/css/y-grid" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/phatone" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/mastodontus" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/zuber-future" rel="stylesheet">          
+  <link href="https://fonts.cdnfonts.com/css/zuber-future" rel="stylesheet"> 
+  <!-- <link rel="stylesheet" href="https://unpkg.com/98.css" />      -->
 </svelte:head>
 
 <Router {url}>
