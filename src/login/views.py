@@ -28,7 +28,7 @@ def login_view(request):
         return JsonResponse({'detail': 'Invalid credentials.'}, status=400)
 
     login(request, user)
-    return JsonResponse({'detail': 'Successfully logged in.'})
+    return JsonResponse({'detail': 'Successfully logged in.', 'sessionid':request.session.session_key})
 
 
 @ensure_csrf_cookie

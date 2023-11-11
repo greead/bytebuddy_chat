@@ -1,9 +1,7 @@
 <script>
 //  Imports
-    import {username, password, data, page, csrf, handleCsrf} from "./store.js"
+    import {username, password, data, csrf, handleCsrf, sessionid} from "../store.js"
     import {Link, navigate} from 'svelte-routing';
-    import {login, cookies} from "./utils.js"
-    import { getCookie } from "svelte-cookie";
     // let loginError = null
     
     /**
@@ -25,12 +23,17 @@
             body: JSON.stringify({username: $username, password: $password}),
         })
 
-        if (res.ok) {
-            navigate('/')
-        }
-        data.set(await res.text())
+        let dat = await res.json()
+
+        data.set(dat)
+        sessionid.set(dat.sessionid)
+
         console.log($data)
-        // page.set('logout')
+        
+        if (res.ok) {
+            navigate('/chat')
+        }        
+        
     }
 
     function hoverOver(event){
@@ -50,11 +53,6 @@
     <h1>ByteBuddy</h1>
 </Link>
 <h4>Log into your community</h4>
-<!-- Form for signup information -->
-<!-- {#if loginError}
-    <div class="error-message">{loginError}</div>
-{/if} -->
-
     <div id="flexBox">
         <div class="idky">
             <lable for="email">Email: </lable>
@@ -69,8 +67,6 @@
     <button on:click={handleLogin} on:mouseenter={hoverOver} on:mouseout={hoverOut}>Login</button>
     <p>Haven't registered an account? Click <Link to="/signup"> here </Link> to sign up!</p>
 
-
-<!-- <button on:click={signOut}>log out</button> -->
 <style>
     #flexBox{
         display: flex;
@@ -104,13 +100,10 @@
         font-family: "VT323", serif;
     }
 
-    #button{
-        width:8em;
-        font-size:1.2em;
-        padding-left:0em;
-        margin-top:1em;
-        align-items: center;
-        border-color:#0900ff;
+    button{
+        background-color: #0900ff;
+        border-color: white;
+        color: white;
 
     }
 

@@ -1,14 +1,15 @@
 <script>
     import Room from "./room.svelte";
 
-    let rooms = ['Room1', 'Room2']
+    export let rooms;
+    
 </script>
 
 
 <div >
     <p>Rooms</p>
     {#each rooms as room}
-        <Room text={room}/>
+        <Room roomName={room}/>
     {/each}
 </div>
 
@@ -18,5 +19,6 @@
     }
     div {
         padding: 8px;
+        width: 10vw;
     }
 </style>
