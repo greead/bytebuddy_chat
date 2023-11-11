@@ -1,12 +1,11 @@
-from rest_framework.routers import DefaultRouter
-from django.urls import path,include
-from .views import SignupView, LoginView, LogoutView
+from django.urls import path
 
+from . import views
 
-# URL Patterns for the Login app
 urlpatterns = [
-    # Sign-up page
-    path('api/signup', SignupView.as_view()),
-    path('api/login',LoginView.as_view()),
-    path('api/logout',LogoutView.as_view())
+    path('csrf/', views.get_csrf, name='api-csrf'),
+    path('login/', views.login_view, name='api-login'),
+    path('logout/', views.logout_view, name='api-logout'),
+    path('session/', views.session_view, name='api-session'),
+    # path('whoami/', views.whoami_view, name='api-whoami'),
 ]

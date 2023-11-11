@@ -20,7 +20,7 @@ class ChatConsumer(WebsocketConsumer):
         # get room_name
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f'chat_{self.room_name}'
-        self.room = ChatRoom.objects.get(name=self.room_name)
+        self.room = ChatRoom.objects.get_or_create(name=self.room_name)
         self.user = self.scope['user']
 
         if self.user.is_anonymous:

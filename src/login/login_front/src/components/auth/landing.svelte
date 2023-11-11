@@ -1,5 +1,4 @@
 <script>
-    import { scale } from 'svelte/transition'
     import {Link} from 'svelte-routing';
     // let hover = true;
     function hoverOver(event){

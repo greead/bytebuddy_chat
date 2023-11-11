@@ -1,73 +1,71 @@
-from django.shortcuts import render
+import json
+
+from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from rest_framework.views import APIView
-from django.contrib.auth.models import User
-from .serializers import UserSerializer, LoginSerializer
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import permissions
-from rest_framework import authentication
-from django.contrib.auth import login, logout
-# from django.shortcuts import render, redirectx
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_POST
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    response = JsonResponse({'detail': 'CSRF cookie set'})
+    response['X-CSRFToken'] = get_token(request)
+    return response
 
 
-class LoginView(APIView):
+@require_POST
+def login_view(request):
+    data = json.loads(request.body)
+    username = data.get('username')
+    password = data.get('password')
 
-    # Link: https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
-    # generates a unique token associated the user if log in successfully
-    # TODO: need to test this with a curl or POSTMAN (like I want to see if it does generate a unique token) 
-    authentication_classes = [authentication.TokenAuthentication]
+    if username is None or password is None:
+        return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
+
+    user = authenticate(username=username, password=password)
+
+    if user is None:
+        return JsonResponse({'detail': 'Invalid credentials.'}, status=400)
+
+    login(request, user)
+    return JsonResponse({'detail': 'Successfully logged in.', 'sessionid':request.session.session_key})
+
+
+@ensure_csrf_cookie
+def logout_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'detail': 'You\'re not logged in.'}, status=400)
+
+    logout(request)
+    return JsonResponse({'detail': 'Successfully logged out.'})
+
+
+@ensure_csrf_cookie
+def session_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'isAuthenticated': False})
+
+    return JsonResponse({'isAuthenticated': True, 'sessionid':request.session.session_key})
+
     
-    # This view should be accessible also for unauthenticated users.
-    permission_classes = [permissions.AllowAny]
-    
-    def post(self, request):
-        #calls upon authenticate method in LoginSerializer
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            #if user is authenticated, it will return a User object
-            user = serializer.validated_data['user']
-            #login will use this user object to create a session for that user
-            #this session is associated with a session cookie stored on the user's browser, which is used to identify the user in subsequent requests.
-            #also update user's fields like last_login, IP address, etc
-            login(request, user)
-            return Response(None, status=status.HTTP_202_ACCEPTED)
-        print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LogoutView(APIView):
-    # weirdly, it I use IsAuthenticated, it will not work
-    # permission_classes = [permissions.IsAuthenticated]
-    
-    def post(self, request):
-        # a pair with login method
-        logout(request)
-        return Response(None, status=status.HTTP_202_ACCEPTED)
-    
-class SignupView(APIView):
-    """
-    View for the sign-up page's API endpoint.
-    """
-    permission_classes = [permissions.AllowAny]
+# def whoami_view(request):
+#     if not request.user.is_authenticated:
+#         return JsonResponse({'isAuthenticated': False})
 
-    def post(self, request):
-        """POST method for the sign-up page to "call" when a user attempts to create an account
+#     return JsonResponse({'username': request.user.username})
+
+# class SignupView(APIView):
+#     permission_classes = [permissions.AllowAny]
+
+#     def post(self, request):
+#         serializer = UserSerializer(data=request.data)
+#         if request.data.get('password') != request.data.get('confirmPw'):
+#             return Response({'error':'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
         
-        Checks if the request is valid, then creates a new user in the database.
-
-        Args:
-            request: The request details.
-
-        Returns:
-            Response: The response to return to the user.
-        """
-        serializer = UserSerializer(data=request.data)
-        if request.data.get('password') != request.data.get('confirmPw'):
-            return Response({'error':'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # print(request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         # print(request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         # print(serializer.errors)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
