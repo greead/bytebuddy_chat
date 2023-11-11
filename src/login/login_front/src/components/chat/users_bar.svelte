@@ -1,13 +1,13 @@
 <script>
     import User from "./user.svelte";
 
-    let users = ['User1', 'User2']
+    export let users;
 </script>
 
 <div >
     <p>Active Users</p>
     {#each users as user}
-        <User text={user}/>
+        <User name={user}/>
     {/each}
 </div>
 
@@ -17,5 +17,6 @@
     }
     div {
         padding: 8px;
+        width: 10vw;
     }
 </style>

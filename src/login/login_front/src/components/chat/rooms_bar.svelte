@@ -1,7 +1,7 @@
 <script>
     import Room from "./room.svelte";
 
-    let rooms = ['Dummy']
+    export let rooms;
     
 </script>
 
@@ -19,5 +19,6 @@
     }
     div {
         padding: 8px;
+        width: 10vw;
     }
 </style>

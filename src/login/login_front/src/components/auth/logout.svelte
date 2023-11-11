@@ -1,6 +1,6 @@
 <script>
     import { navigate } from 'svelte-routing';
-    import { csrf, username, password, data} from '../store'
+    import { data } from '../store'
 
     async function handleLogout(event) {
         let res = await fetch("http://localhost:8000/logout/", {
@@ -8,6 +8,8 @@
         })
 
         data.set(await res.json())
+        console.log($data)
+
         if (res.ok) {
             navigate('/')
         }

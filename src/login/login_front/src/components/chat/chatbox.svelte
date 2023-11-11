@@ -4,6 +4,11 @@
 
     let messageList = []
     let inputMessage = ""
+
+    onMount(() => {
+        loadMessages()
+    })
+
     onDestroy(() => {
         $wss.disconnectWebSocket()
     })
@@ -15,17 +20,22 @@
     async function handleMessage(event) {
         $wss.sendMessage(inputMessage)
     }
+
+    async function loadMessages() {
+        let apiMessages = []
+        // TODO Fetch messages from api
+        messageList = [apiMessages, ...messageList] // <-- Not a placeholder, don't change
+    }
+
 </script>
 
 <div class="chatbox">
-    <div id="messageArea" class="messageArea">
-        <div>
-            <ul role="listbox">
-                {#each messageList as message, i}
-                    <li>{message}</li>
-                {/each}
-            </ul>
-        </div>
+    <div id="messageArea" class="messageArea">        
+        <ul role="listbox">
+            {#each messageList as message, i}
+                <li>{message}</li>
+            {/each}
+        </ul>
     </div>
     
     <div id="messageBox" class="messageBox">
@@ -37,27 +47,41 @@
 
 <style>
     ul {
-        list-style-type: none;
+        list-style: none;
         margin: 0;
-        padding: 0px 8px;
+        padding: 0;
         text-align: left;
+        max-height: 20vh;
+        text-indent: 10px;
+        overflow: auto;
     }
     .messageArea {
         width: 100%;
-        height: 10em;
+        height: 20vh;
         border: 1px solid #333;
-        padding: 8px 0px;
+        padding: 0;
         background-color: white;
+        
     }
     .messageBox {
-        width: 30em;
+        display: flex;
+        width: 50vw;
+        height: fit-content;
         margin-top: 4px;
     }
     .textBox {
         height: 2em;
-        width: 79%;
+        padding: 0;
+        margin: 0;
+        width: 80%;
     }
     .submit {
-        width: 18%;
+        padding: 0;
+        margin: 0;
+        width: 20%;
+        border-radius: 0;
+    }
+    .chatbox {
+        width: 50vw;
     }
 </style>
