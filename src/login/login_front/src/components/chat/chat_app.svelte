@@ -1,10 +1,17 @@
 <script>
-    import Logout from "./logout.svelte";
+    import Logout from "../auth/logout.svelte";
     import Chatbox from "./chatbox.svelte";
     import RoomsBar from "./rooms_bar.svelte";
     import Ide from "./ide.svelte";
     import UsersBar from "./users_bar.svelte";
+
+
 </script>
+
+<div class="topbar">
+    <Logout/>
+</div>
+
 
 <div class="chatbox">
     <div class="main">
@@ -15,8 +22,7 @@
         </div>
         <UsersBar/>
     </div>
-    <br><br>
-    <Logout/>
+
 </div>
 
 
@@ -27,6 +33,10 @@
     .main {
         display: flex;
         align-items: start;
+    }
+    .topbar {
+        margin-left: auto;
+        margin-right: 0;
     }
 </style>
 

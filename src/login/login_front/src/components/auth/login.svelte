@@ -1,9 +1,7 @@
 <script>
 //  Imports
-    import {username, password, data, page, csrf, handleCsrf} from "./store.js"
+    import {username, password, data, page, csrf, handleCsrf} from "../store.js"
     import {Link, navigate} from 'svelte-routing';
-    import {login, cookies} from "./utils.js"
-    import { getCookie } from "svelte-cookie";
     // let loginError = null
     
     /**
@@ -26,7 +24,7 @@
         })
 
         if (res.ok) {
-            navigate('/')
+            navigate('/chat')
         }
         data.set(await res.text())
         console.log($data)
@@ -103,7 +101,7 @@
         height:2em;
         font-family: "VT323", serif;
     }
-
+/* 
     #button{
         width:8em;
         font-size:1.2em;
@@ -112,7 +110,7 @@
         align-items: center;
         border-color:#0900ff;
 
-    }
+    } */
 
     h1,h2 {
         font-family: 'phatone', serif;
