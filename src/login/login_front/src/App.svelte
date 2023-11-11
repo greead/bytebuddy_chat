@@ -19,7 +19,8 @@
   <link href="https://fonts.cdnfonts.com/css/y-grid" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/phatone" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/mastodontus" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/zuber-future" rel="stylesheet">          
+  <link href="https://fonts.cdnfonts.com/css/zuber-future" rel="stylesheet"> 
+  <!-- <link rel="stylesheet" href="https://unpkg.com/98.css" />      -->
 </svelte:head>
 
 <Router {url}>
