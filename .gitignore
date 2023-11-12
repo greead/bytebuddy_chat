@@ -52,4 +52,4 @@ Thumbs.db
 *.wmv
 
 # Database
-**.sqlite3
+./src/db.sqlite3
