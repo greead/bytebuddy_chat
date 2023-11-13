@@ -1,10 +1,11 @@
 import json
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, models
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
+from django.db import IntegrityError
 
 @ensure_csrf_cookie
 def get_csrf(request):
@@ -30,6 +31,28 @@ def login_view(request):
     login(request, user)
     return JsonResponse({'detail': 'Successfully logged in.', 'sessionid':request.session.session_key})
 
+@require_POST
+def signup_view(request):
+    data = json.loads(request.body)
+    username = data.get('username')
+    password = data.get('password')
+
+    if username is None or password is None:
+         return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
+    
+    try:
+            user = models.User.objects.create_user(
+                username = username,
+                password = password,
+                email=  username)
+            user.save()
+
+    except IntegrityError as e:
+            return JsonResponse({'detail': 'Please enter a different email!'}, status = 400)
+ 
+    #extra
+    # login(request, user)
+    return JsonResponse({'detail':'Successfully registered'})
 
 @ensure_csrf_cookie
 def logout_view(request):
