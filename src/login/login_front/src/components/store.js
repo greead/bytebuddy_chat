@@ -13,6 +13,12 @@ export const password = writable('')
 
 export const data = writable()
 
+export const userid = writable('')
+
+export const displayName = writable('')
+
+export const bio= writable('')
+
 export async function handleCsrf(event) {
     let res = await fetch("http://localhost:8000/csrf/", {
         credentials: "include",

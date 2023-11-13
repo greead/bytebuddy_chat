@@ -5,10 +5,11 @@
     import Ide from "./ide.svelte";
     import UsersBar from "./users_bar.svelte";
     import { onMount } from "svelte";
-
+    import Nav from "../navbar/nav.svelte"
+    import {userid} from "../store";
     let roomsList = []
     let profilesList = []
-
+    console.log($userid)
     onMount(() => {
         getRoomsList()
         getProfilesList()
@@ -28,13 +29,9 @@
 
 </script>
 
+
 <div class="system">
-    <div class="topbar">
-        <button>Profile</button>
-        <Logout/>
-    </div>
-    
-    
+    <Nav/>
     <div class="chatbox">
         <div class="main">
             <RoomsBar rooms={roomsList}/>
@@ -51,12 +48,16 @@
 
 
 <style>
+    .system{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+
+    }
     .main {
         display: flex;
         align-items: start;
     }
-    .topbar {
-        padding-bottom: 15px;
-    }
+   
 </style>
 

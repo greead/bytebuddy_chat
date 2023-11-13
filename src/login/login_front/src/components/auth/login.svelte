@@ -1,6 +1,6 @@
 <script>
 //  Imports
-    import {username, password, data, csrf, handleCsrf, sessionid} from "../store.js"
+    import {username, password, data, csrf, handleCsrf, sessionid, userid} from "../store.js"
     import {Link, navigate} from 'svelte-routing';
     // let loginError = null
     
@@ -13,6 +13,8 @@
         await handleCsrf()
         console.log($csrf)
         console.log('csrftoken:', $csrf)
+        // This is to fix an issue where CSRF cookie not set (basically csrf token is different between the one returned from Django server and the one in browser cookie)
+        // document.cookie = 'csrftoken=' + $csrf;
         let res = await fetch("http://localhost:8000/login/", {
             method: "POST",
             headers: {
@@ -27,8 +29,9 @@
 
         data.set(dat)
         sessionid.set(dat.sessionid)
-
+        userid.set(dat.userid)
         console.log($data)
+        console.log($userid)
         
         if (res.ok) {
             navigate('/chat')
@@ -101,10 +104,8 @@
     }
 
     button{
-        background-color: #0900ff;
         border-color: white;
         color: white;
-
     }
 
     h1,h2 {
@@ -126,6 +127,7 @@
 
     h2 {
         font-size: 3em;
+        margin-top:4em;
     }
 
     /* .error-message{

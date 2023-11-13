@@ -6,6 +6,7 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.db import IntegrityError
+from chat.models import Profile
 
 @ensure_csrf_cookie
 def get_csrf(request):
@@ -29,7 +30,7 @@ def login_view(request):
         return JsonResponse({'detail': 'Invalid credentials.'}, status=400)
 
     login(request, user)
-    return JsonResponse({'detail': 'Successfully logged in.', 'sessionid':request.session.session_key})
+    return JsonResponse({'detail': 'Successfully logged in.', 'sessionid':request.session.session_key, 'userid':user.id})
 
 @require_POST
 def signup_view(request):
@@ -41,11 +42,13 @@ def signup_view(request):
          return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
     
     try:
-            user = models.User.objects.create_user(
+        user = models.User.objects.create_user(
                 username = username,
                 password = password,
                 email=  username)
-            user.save()
+        profile = Profile(user= user, display_name =username)
+        user.save()
+        profile.save()
 
     except IntegrityError as e:
             return JsonResponse({'detail': 'Please enter a different email!'}, status = 400)
@@ -70,25 +73,33 @@ def session_view(request):
 
     return JsonResponse({'isAuthenticated': True, 'sessionid':request.session.session_key})
 
-    
+#TO-DO:
+#make a view to return profile picture
+
+#In-progress:
+# profile pictures is stored in media/images using ImageField
+# so I created a media/images at the project directory (don't know if it is correct)
+# pfp will be return as a url based on user id
+# svelte will using url to serve
+#have not been tested
+
+@require_POST
+def get_profile_picture(request, userid):
+    try:
+        user = models.User.objects.get(id=userid)
+        image_url= Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        return JsonResponse({'error': 'Image not found'}, status=404)
+
+    response_data = {
+        'image_url': image_url.image.url if image_url.image else None,
+    }
+
+    return JsonResponse(response_data)
+
 
 # def whoami_view(request):
 #     if not request.user.is_authenticated:
 #         return JsonResponse({'isAuthenticated': False})
 
 #     return JsonResponse({'username': request.user.username})
-
-# class SignupView(APIView):
-#     permission_classes = [permissions.AllowAny]
-
-#     def post(self, request):
-#         serializer = UserSerializer(data=request.data)
-#         if request.data.get('password') != request.data.get('confirmPw'):
-#             return Response({'error':'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-        
-#         # print(request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         # print(serializer.errors)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
