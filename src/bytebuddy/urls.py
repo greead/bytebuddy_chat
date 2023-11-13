@@ -24,6 +24,8 @@ urlpatterns = [
 
     # Login app routes
     path('', include('login.urls')),
+    path('chat/', include('chat.urls')),
+    path('api-token-auth', views.obtain_auth_token)
     # Chat app routes
     
 ]

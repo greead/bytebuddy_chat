@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-<!-- Svelte component representing the Signup page -->
-=======
->>>>>>> 7db87991c596543514d5598d6c4af2f178634736
 <script>
-    import {username, password} from "./store.js"
+    import {username, password} from "../store.js"
     import {Link} from "svelte-routing";
     let signupError = null
     let confirmPassword = null
