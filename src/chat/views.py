@@ -32,7 +32,7 @@ def profile_list(request):
 
 #perfom actions on user based on ID
 @api_view(['GET', 'PUT', 'DELETE'])      
-def profile(request,id):
+def UserprofilewithID(request,id):
     try:
         user = Profile.objects.get(pk=id)
     except Profile.DoesNotExist:
