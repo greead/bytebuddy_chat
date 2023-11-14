@@ -1,5 +1,5 @@
 <script>
-    import {username, password, csrf, handleCsrf, data} from "./store.js"
+    import {username, password, handleCsrf, csrf} from "../store.js"
     import {Link, navigate} from "svelte-routing";
     let signupError = null
     let confirmPassword = null
@@ -10,40 +10,43 @@
      * @param event The event caller
     */
     async function handleSignUp(event){
+        event.preventDefault();
         signupError = null
-        // if( !(confirmPassword === $password)){
-        //     signupError = "Passwords do not match"
-        // }
-        // console.log($csrf)
-        await handleCsrf();
-        // console.log($csrf)
-        console.log('csrftoken:', $csrf)
-        let reponse = await fetch("http://localhost:8000/signup/", {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": $csrf,
-            },
-                credentials: "include",
-                body: JSON.stringify({username: $username, password: $password})
-        });
-
-        data.set(await reponse.json())
-
-        if(reponse.ok) {
-                signupError= null;
-                console.log('Signed up succesfully');
-                navigate('/login')
-        } else {
-                signupError = $data.detail
-                console.log(signupError)
+        if($password != $confirmPassword){
+            signupError = "Passwords do not match"
         }
+        else{
+        await handleCsrf()
+        // console.log('csrftoken:', $csrf)
+        // This is to fix an issue where CSRF cookie not set (basically csrf token is different between the one returned from Django server and the one in browser cookie)
+        document.cookie = 'csrftoken=' + $csrf;
+            // Make a POST request to the signup api by passing the user object in the store
+        let reponse = await fetch('http://127.0.0.1:8000/signup/', {
+            method: 'POST',
+            headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": $csrf,
+        },
+            credentials: "include",
+            body: JSON.stringify({username: $username, password: $password}),
+            });
+          
+        
+        if(reponse.ok) {
+            signupError= null;
+            console.log('Sign up succesful');
+            navigate('/')
+        } else {
+                const error = await reponse.json();
+                signupError = error.detail
+        }
+    }
     }   
 
     function hoverOver(event){
         event.target.style.color= "#0900ff";
          event.target.style.backgroundColor="white";
-    }
+        }
   
     function hoverOut(event){
         event.target.style.color= "white";
@@ -51,6 +54,7 @@
     }   
 
 </script>
+
 <h2>Welcome to</h2>
 <Link to="/">
     <h1>ByteBuddy</h1>
@@ -60,7 +64,7 @@
     <div class="error-message">{signupError}</div>
 {/if}
 
-<!-- Form for signup information -->
+
 <!-- <form on:submit={handleForm}> -->
     <div id="flexBox">
         <div class="idky">
@@ -73,11 +77,11 @@
         </div>
         <div class="idky">
             <lable for="cpw">Confirm Password: </lable>
-            <input bind:value={confirmPassword} type="password" id="cpw" name="cpw">
+            <input bind:value={$confirmPassword} type="password" id="cpw" name="cpw">
         </div>
     </div>
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <button id="button" on:mouseenter={hoverOver} on:mouseout={hoverOut} on:click={handleSignUp}>Sign Up </button>
+    <button id="button" on:mouseenter={hoverOver} on:mouseout={hoverOut} on:click={handleSignUp}>Sign Up</button>
     <p>Already have an account? Click <Link to="/login"> here </Link> to log in!</p>
 <!-- </form> -->
 
@@ -92,6 +96,7 @@
         font-size: 1.5em;
         height: 6em;
     }
+
     lable{
         width:7em;
         color:white;
@@ -116,13 +121,13 @@
     }
 
     button{
-        font-family: 'VT323', serif;
         /* width:8em; */
-        font-size:1.5em;
+        /* font-size:1.2em; */
         /* padding-left:0em; */
         margin-top:1em;
         align-items: center;
-        border-color:#0900ff;
+        border-color: white;
+        color: white;
 
     }
 
@@ -144,6 +149,7 @@
 
     h2 {
         font-size: 3em;
+        margin-top:4em;
     }
 
     .error-message{
@@ -151,7 +157,7 @@
         font-size:2em;
         color:red;
 
-    }
+    } 
 
 
 </style>

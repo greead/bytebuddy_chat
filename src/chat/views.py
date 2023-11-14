@@ -49,3 +49,5 @@ def profile(request,id):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+def startapp(request):
+    return render(request, 'index.html')

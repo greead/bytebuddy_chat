@@ -4,9 +4,9 @@ from django.db import models
 class ChatRoom(models.Model):
     name = models.CharField(max_length=128)
     online = models.ManyToManyField(to=User, blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-    lastUpdate = models.DateTimeField(auto_now=True)
-    #ownerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_chatrooms")
+    created = models.TimeField(auto_now_add=True)
+    lastUpdate = models.TimeField(auto_now=True)
+    # ownerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_chatrooms")
 
     def get_online_count(self):
         return self.online.count()
@@ -36,4 +36,4 @@ class Profile(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=16)
     bio = models.CharField(max_length=256)
-    picture = models.ImageField(upload_to='images/', blank=True)
+    picture = models.ImageField(upload_to='images/', default='/images/basicProfile.png', blank=True)
