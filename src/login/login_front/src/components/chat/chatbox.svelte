@@ -14,6 +14,7 @@
     })
 
     $wss.subscribe((store) => {
+        console.log("msg in sub", store.message)
         messageList = [...messageList, store.message]
     })
 
@@ -61,6 +62,7 @@
         border: 1px solid #333;
         padding: 0;
         background-color: white;
+        color: black;
         
     }
     .messageBox {

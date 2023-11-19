@@ -9,7 +9,7 @@
             $wss.disconnectWebSocket()
         }
         // TODO set WebSocket uri based on the ChatConsumer's syntax
-        uri.set('wss://socketsbay.com/wss/v2/1/demo/') // <-- Placeholder
+        uri.set('ws://localhost:8000/ws/chat/default/') // <-- Placeholder
         $wss.connectWebSocket()
     }
 

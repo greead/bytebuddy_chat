@@ -35,6 +35,16 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name,
         )
+        
+        last_30 = [{'user':last.user.username,'content':last.content} for last in reversed(Message.objects.filter(room=self.room[0]).order_by('-timestamp')[:30])]
+        print(last_30)
+        self.send(json.dumps(
+            {
+                'type': 'message_list',
+                'user': self.user.username,
+                'message': last_30
+            }
+        ))
 
     def close_during_connect(self, code):
         self.accept()
@@ -55,7 +65,7 @@ class ChatConsumer(WebsocketConsumer):
         )
     
 
-    def receive_message(self, text_data=None, bytes_data=None):
+    def receive(self, text_data=None, bytes_data=None):
         '''
             Called when someone has sent a message
         '''
@@ -76,7 +86,7 @@ class ChatConsumer(WebsocketConsumer):
                 'message': message,
             }
         )
-        Message.objects.create(user=self.user, room=self.room, content=message)
+        Message.objects.create(user=self.user, room=self.room[0], content=message)
     
 
     def chat_message(self, event):
