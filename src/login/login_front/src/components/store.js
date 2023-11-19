@@ -59,7 +59,7 @@ function createWebSocketStore(url) {
           update((state) => ({ ...state, message: data.user + ": " + data.message }));
           break;
         case "message_list":
-          for (const msg of data.message) {
+          for (let msg of data.message) {
             update((state) => ({...state, message: msg.user + ": " + msg.content}))
           }
             
