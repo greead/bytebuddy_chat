@@ -1,73 +1,105 @@
-from django.shortcuts import render
+import json
+
+from django.contrib.auth import authenticate, login, logout, models
 from django.http import JsonResponse
-from rest_framework.views import APIView
-from django.contrib.auth.models import User
-from .serializers import UserSerializer, LoginSerializer
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import permissions
-from rest_framework import authentication
-from django.contrib.auth import login, logout
-# from django.shortcuts import render, redirectx
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_POST
+from django.db import IntegrityError
+from chat.models import Profile
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    response = JsonResponse({'detail': 'CSRF cookie set'})
+    response['X-CSRFToken'] = get_token(request)
+    return response
 
 
-class LoginView(APIView):
+@require_POST
+def login_view(request):
+    data = json.loads(request.body)
+    username = data.get('username')
+    password = data.get('password')
 
-    # Link: https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
-    # generates a unique token associated the user if log in successfully
-    # TODO: need to test this with a curl or POSTMAN (like I want to see if it does generate a unique token) 
-    authentication_classes = [authentication.TokenAuthentication]
+    if username is None or password is None:
+        return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
+
+    user = authenticate(username=username, password=password)
+
+    if user is None:
+        return JsonResponse({'detail': 'Invalid credentials.'}, status=400)
+
+    login(request, user)
+    return JsonResponse({'detail': 'Successfully logged in.', 'sessionid':request.session.session_key, 'userid':user.id})
+
+@require_POST
+def signup_view(request):
+    data = json.loads(request.body)
+    username = data.get('username')
+    password = data.get('password')
+
+    if username is None or password is None:
+         return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
     
-    # This view should be accessible also for unauthenticated users.
-    permission_classes = [permissions.AllowAny]
-    
-    def post(self, request):
-        #calls upon authenticate method in LoginSerializer
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            #if user is authenticated, it will return a User object
-            user = serializer.validated_data['user']
-            #login will use this user object to create a session for that user
-            #this session is associated with a session cookie stored on the user's browser, which is used to identify the user in subsequent requests.
-            #also update user's fields like last_login, IP address, etc
-            login(request, user)
-            return Response(None, status=status.HTTP_202_ACCEPTED)
-        print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        user = models.User.objects.create_user(
+                username = username,
+                password = password,
+                email=  username)
+        profile = Profile(user= user, display_name =username)
+        user.save()
+        profile.save()
 
-class LogoutView(APIView):
-    # weirdly, it I use IsAuthenticated, it will not work
-    # permission_classes = [permissions.IsAuthenticated]
-    
-    def post(self, request):
-        # a pair with login method
-        logout(request)
-        return Response(None, status=status.HTTP_202_ACCEPTED)
-    
-class SignupView(APIView):
-    """
-    View for the sign-up page's API endpoint.
-    """
-    permission_classes = [permissions.AllowAny]
+    except IntegrityError as e:
+            return JsonResponse({'detail': 'Please enter a different email!'}, status = 400)
+ 
+    #extra
+    # login(request, user)
+    return JsonResponse({'detail':'Successfully registered'})
 
-    def post(self, request):
-        """POST method for the sign-up page to "call" when a user attempts to create an account
-        
-        Checks if the request is valid, then creates a new user in the database.
+@ensure_csrf_cookie
+def logout_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'detail': 'You\'re not logged in.'}, status=400)
 
-        Args:
-            request: The request details.
+    logout(request)
+    return JsonResponse({'detail': 'Successfully logged out.'})
 
-        Returns:
-            Response: The response to return to the user.
-        """
-        serializer = UserSerializer(data=request.data)
-        if request.data.get('password') != request.data.get('confirmPw'):
-            return Response({'error':'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # print(request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@ensure_csrf_cookie
+def session_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'isAuthenticated': False})
+
+    return JsonResponse({'isAuthenticated': True, 'sessionid':request.session.session_key})
+
+#TO-DO:
+#make a view to return profile picture
+
+#In-progress:
+# profile pictures is stored in media/images using ImageField
+# so I created a media/images at the project directory (don't know if it is correct)
+# pfp will be return as a url based on user id
+# svelte will using url to serve
+#have not been tested
+
+@require_POST
+def get_profile_picture(request, userid):
+    try:
+        user = models.User.objects.get(id=userid)
+        image_url= Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        return JsonResponse({'error': 'Image not found'}, status=404)
+
+    response_data = {
+        'image_url': image_url.image.url if image_url.image else None,
+    }
+
+    return JsonResponse(response_data)
+
+
+# def whoami_view(request):
+#     if not request.user.is_authenticated:
+#         return JsonResponse({'isAuthenticated': False})
+
+#     return JsonResponse({'username': request.user.username})

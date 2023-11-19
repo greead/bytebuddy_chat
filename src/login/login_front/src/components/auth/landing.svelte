@@ -1,5 +1,4 @@
 <script>
-    import { scale } from 'svelte/transition'
     import {Link} from 'svelte-routing';
     // let hover = true;
     function hoverOver(event){
@@ -33,26 +32,31 @@
 <style>
     h1,h2 {
         font-family: 'phatone', serif;
-        /* max-width: 50vw; */
+        color: #0900ff;
     }
-
+    h1 {
+        font-size: 4em;
+    }
+    h2 {
+        font-size: 3em; 
+        margin-top:3em;
+    }
     h3 {
         font-family: 'VT323', serif;
         font-size: 2em;
         color: #0900ff;
     }
-
     #intro {
         font-family: 'vt323', serif;
         font-size: 1.5em;
         color: #ffffff;
-        text-align: center;
-        max-width : 30em;
+        display:flex;
+        place-items: center;
         word-wrap: break-word;
+        padding-left: 8em;
+        padding-right: 8em;
     }
-
     #buttons{
-        font-family:'vt323', serif;
         margin-top: 2em;
         display: flex;
         align-items: center;
@@ -61,22 +65,4 @@
         margin-left:25%
     }
 
-    button{
-        background-color: #0900ff;
-        color: white;
-        font-size: 1.5em;
-    }
-    h1 {
-        font-size: 4em;
-        color: #0900ff;
-    }
-
-    h2 {
-        font-size: 3em;
-        color: #0900ff;
-    }
-
-    /* .hover{
-        background:white;
-    } */
 </style>
