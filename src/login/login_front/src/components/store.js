@@ -35,6 +35,7 @@ function createWebSocketStore(url) {
   const { subscribe, set, update } = writable({
     websocket: null,
     message: '',
+    // message_bundle: [],
     isConnected: false,
   });
 
@@ -45,12 +46,25 @@ function createWebSocketStore(url) {
 
     ws.onopen = () => {
       update((state) => ({ ...state, websocket: ws, isConnected: true }));
-      console.log('WebSocket opened at:', url)
+      console.log('WebSocket opened at:', url);
     };
 
     ws.onmessage = (event) => {
-      update((state) => ({ ...state, message: event.data }));
-      console.log('WebSocket message received:', event.data)
+      // update((state) => ({ ...state, message: event.data }));
+      // console.log('WebSocket message received:', event.data)
+      const data = JSON.parse(event.data);
+      console.log(data);
+      switch (data.type) {
+        case "chat_message":
+          update((state) => ({ ...state, message: data.user + ": " + data.message }));
+          break;
+        // case "message_list":
+          // update((state) => ({...state, message_bundle: data.message}))
+          // break;          
+        default:
+          console.error("Unknown message type!");
+          break;
+      }
     };
 
     ws.onclose = () => {
@@ -71,7 +85,9 @@ function createWebSocketStore(url) {
 
   const sendMessage = (msg) => {
     if(ws) {
-        ws.send(msg);
+        ws.send(JSON.stringify({
+          "message":msg
+        }));
         console.log('WebSocket message sent:', msg)
     }
   };
