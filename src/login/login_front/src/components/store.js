@@ -58,9 +58,12 @@ function createWebSocketStore(url) {
         case "chat_message":
           update((state) => ({ ...state, message: data.user + ": " + data.message }));
           break;
-        // case "message_list":
-          // update((state) => ({...state, message_bundle: data.message}))
-          // break;          
+        case "message_list":
+          for (const msg of data.message) {
+            update((state) => ({...state, message: msg.user + ": " + msg.content}))
+          }
+            
+          break;          
         default:
           console.error("Unknown message type!");
           break;
