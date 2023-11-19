@@ -21,7 +21,7 @@
         // This is to fix an issue where CSRF cookie not set (basically csrf token is different between the one returned from Django server and the one in browser cookie)
         document.cookie = 'csrftoken=' + $csrf;
             // Make a POST request to the signup api by passing the user object in the store
-        let reponse = await fetch('http://127.0.0.1:8000/signup/', {
+        let reponse = await fetch('http://localhost:8000/signup/', {
             method: 'POST',
             headers: {
             "Content-Type": "application/json",
