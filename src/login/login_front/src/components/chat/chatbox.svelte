@@ -55,35 +55,54 @@
         max-height: 20vh;
         text-indent: 10px;
         overflow: auto;
-    }
-    .messageArea {
-        width: 100%;
-        height: 20vh;
-        border: 1px solid #333;
-        padding: 0;
-        background-color: white;
-        color: black;
         
     }
+
+    /* chat history*/
+    .messageArea {
+        width: 100%;
+        height: 68%;
+        background-color: #0700d2;
+        color: white;
+        border-radius: 1em; 
+        padding:1em;
+        box-sizing: border-box;
+    }
+
+    /* where you type your message and button */
     .messageBox {
         display: flex;
-        width: 50vw;
-        height: fit-content;
-        margin-top: 4px;
+        width:100%;
+        flex-direction:row;
+        /* width: 50vw; */
+        align-items: center;
+        justify-content: space-between;
     }
+
+    /* where you type your message */
     .textBox {
-        height: 2em;
-        padding: 0;
-        margin: 0;
-        width: 80%;
+        height:90%;
+        width: 85%;
+        border-radius:0.6em;
+        border-color:white;
     }
+
+    /* button */
     .submit {
-        padding: 0;
-        margin: 0;
-        width: 20%;
-        border-radius: 0;
+        /* width: 20%; */
+        height:100%;
+        border-radius: 0.3em;
     }
+
+    /* where you type, submit button and chat history */
     .chatbox {
+        /* width: 50vw; */
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        height: 60%;
         width: 50vw;
+        font-family: 'VT323';
     }
 </style>

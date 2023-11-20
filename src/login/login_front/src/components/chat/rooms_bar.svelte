@@ -18,7 +18,9 @@
         color: white;
     }
     div {
-        padding: 8px;
-        width: 10vw;
+        /* padding: 1em;
+        width: 10vw; */
+        display:flex;
+        flex-direction: column;
     }
 </style>

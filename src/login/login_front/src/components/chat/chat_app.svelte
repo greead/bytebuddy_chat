@@ -32,31 +32,46 @@
 
 <div class="system">
     <Nav/>
-    <div class="chatbox">
+    <!-- <div class="chatbox"> -->
         <div class="main">
             <RoomsBar rooms={roomsList}/>
-            <div>
+            <div class="divchatbox">
                 <Ide/>
                 <Chatbox/>
             </div>
             <UsersBar users={profilesList}/>
         </div>
     
-    </div>
+    <!-- </div> -->
 </div>
 
 
 
 <style>
+    .divchatbox{
+        height:100%;
+    }
+
     .system{
         display:flex;
         flex-direction: column;
         align-items: center;
+        justify-content: space-between;
+        width:100vw;
+        height:50vw;
 
     }
     .main {
+        width:92%;
         display: flex;
+        flex-direction: row;
         align-items: start;
+        justify-content: space-evenly;
+        height: 100%;
+        margin-top:1em;
+        /* border-color: black;
+        border-radius:5em;
+        border: 0.1em solid #eeeeee;  */
     }
    
 </style>

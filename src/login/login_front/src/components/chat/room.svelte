@@ -22,7 +22,7 @@
 <style>
     div {
         display: grid;
-        padding-right: 4px;
-        padding-bottom: 4px;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
     }
 </style>

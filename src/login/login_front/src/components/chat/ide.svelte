@@ -4,9 +4,11 @@
 
 <style>
     div {
-        height: 40vh;
-        background-color: white;
-        border: 1px solid #333;
-        margin-bottom: 10px;
+        height: 40%;
+        border: 1px solid none;
+        background-color: #0700d2;
+        color:white;
+        border-radius: 1em;
+        font-family: 'VT323';
     }
 </style>

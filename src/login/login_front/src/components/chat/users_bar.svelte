@@ -16,7 +16,7 @@
         color: white;
     }
     div {
-        padding: 8px;
+        /* padding: 8px; */
         width: 10vw;
     }
 </style>
