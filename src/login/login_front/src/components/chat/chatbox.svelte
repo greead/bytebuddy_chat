@@ -80,11 +80,14 @@
     }
 
     /* where you type your message */
-    .textBox {
+    input {
+        box-sizing: border-box;
         height:90%;
         width: 85%;
         border-radius:0.6em;
-        border-color:white;
+        border-color: #ccc;
+        padding: 10px; 
+        font-family: 'VT323';
     }
 
     /* button */
