@@ -1,16 +1,15 @@
 from django.shortcuts import render
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, IDESerializer
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse 
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from .models import Profile
+from .models import ChatRoom, IDE
 from rest_framework.response import Response
 from rest_framework import status
 
-
-# Create your views here.
 
 #function to get all users and add new user
 @api_view(['GET', 'POST'])
@@ -49,5 +48,25 @@ def UserprofilewithID(request,id):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 def startapp(request):
     return render(request, 'index.html')
+
+@api_view(['GET','PUT'])
+def ide_view(request, chatroom_id):
+
+    ide = IDE.objects.get(pk=chatroom_id)
+
+    if ide:
+        if request.method == 'GET':
+            serializer = IDESerializer(ide)
+            return Response(serializer.data)
+        elif request.method == 'PUT':
+            serializer = IDESerializer(ide, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

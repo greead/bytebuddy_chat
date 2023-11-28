@@ -46,8 +46,8 @@ def signup_view(request):
                 username = username,
                 password = password,
                 email=  username)
-        #TODO: split username on @, take first part of username
-        profile = Profile(user= user, display_name =username)
+        # Split username(email) and use first portion as displayname
+        profile = Profile(user= user, display_name =username.split("@")[0])
         user.save()
         profile.save()
 

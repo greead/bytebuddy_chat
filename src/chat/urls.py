@@ -6,7 +6,7 @@ from . import views as v
 urlpatterns = [
     path("UserprofilewithID/<int:id>/", v.UserprofilewithID, name="UserprofilewithID"),
     path('profile_list/', v.profile_list, name='profile_list'),
-    
+    path('ide/<int:chatroom_id>/', v.ide_view, name='ide_view'),
     # Sign-up page
     path('', v.startapp),
 ]
