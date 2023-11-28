@@ -37,3 +37,8 @@ class Profile(models.Model):
     display_name = models.CharField(max_length=16)
     bio = models.CharField(max_length=256)
     picture = models.ImageField(upload_to='images/', default='/images/basicProfile.png', blank=True)
+
+
+class IDE(models.Model):
+    code = models.CharField(default='', max_length=1000)
+    chat_room = models.OneToOneField("ChatRoom", verbose_name=("chat_room"), on_delete=models.CASCADE)

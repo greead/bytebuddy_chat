@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 import json
 
-from .models import ChatRoom, Message
+from .models import ChatRoom, Message, IDE
 
 class ChatConsumer(WebsocketConsumer):
     '''
@@ -17,10 +17,12 @@ class ChatConsumer(WebsocketConsumer):
         # log each connection for troubleshooting
         print("ChatConsumer: connect: " + str(self.scope["user"]))
 
-        # get room_name
+        # create/get room_name, create/get ide
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f'chat_{self.room_name}'
         self.room = ChatRoom.objects.get_or_create(name=self.room_name)
+        print(self.room[0].id)
+        self.ide = IDE.objects.get_or_create(chat_room=self.room[0].id)
         self.user = self.scope['user']
 
         if self.user.is_anonymous:
@@ -35,7 +37,23 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name,
         )
+
+        # send the user list to the newly joined user
+        self.send(json.dumps({
+            'type': 'user_list',
+            'users': [user.username for user in self.room.online.all()],
+        }))
+
+        #send notification
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type': 'user_join',
+                'user': self.user.username,
+            }
+        )
         
+        # send last 30 messages
         last_30 = [{'user':last.user.username,'content':last.content} for last in reversed(Message.objects.filter(room=self.room[0]).order_by('-timestamp')[:30])]
         print(last_30)
         self.send(json.dumps(
@@ -58,11 +76,21 @@ class ChatConsumer(WebsocketConsumer):
         # log each disconnect
         print("ChatConsumer: disconnect")
 
+        #send notification
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type': 'user_leave',
+                'user': self.user.username,
+            }
+        )
+
         # disconnect
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name,
         )
+        self.room.online.remove(self.user)
     
 
     def receive(self, text_data=None, bytes_data=None):
