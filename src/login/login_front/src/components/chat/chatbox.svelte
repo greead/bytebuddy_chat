@@ -2,6 +2,17 @@
     import { onDestroy, onMount } from "svelte";
     import { uri, wss } from "../store";
 
+    let messageArea;
+
+    function scrollMessageAreaToBottom() {
+        if (messageArea) {
+        messageArea.scrollTo({
+            top: messageArea.scrollHeight,
+            behavior: 'smooth', // You can change this to 'auto' for instant scrolling
+        });
+        }
+    } 
+
     let messageList = []
     let inputMessage = ""
 
@@ -19,7 +30,9 @@
     })
 
     async function handleMessage(event) {
-        $wss.sendMessage(inputMessage)
+        await $wss.sendMessage(inputMessage)
+        
+        scrollMessageAreaToBottom()
     }
 
     async function loadMessages() {
@@ -32,9 +45,9 @@
 
 <div class="chatbox">
     <div id="messageArea" class="messageArea">        
-        <ul role="listbox">
+        <ul role="listbox" bind:this={messageArea}>
             {#each messageList as message, i}
-                <li>{message}</li>
+                <li class:even={i % 2 === 0} class:odd={i % 2 !== 0}>{message}</li>
             {/each}
         </ul>
     </div>
@@ -52,7 +65,7 @@
         margin: 0;
         padding: 0;
         text-align: left;
-        max-height: 20vh;
+        max-height: 100%;
         text-indent: 10px;
         overflow: auto;
         
@@ -107,5 +120,13 @@
         height: 60%;
         width: 50vw;
         font-family: 'VT323';
+    }
+
+    .even {
+        background-color: rpg rd#2a2796;
+    }
+
+    .odd {
+        background-color:#0500a3;
     }
 </style>
