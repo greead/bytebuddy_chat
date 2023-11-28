@@ -31,6 +31,8 @@ export async function handleCsrf(event) {
 // CHAT STORE //
 export const uri = writable('')
 
+export const user_store = writable([])
+
 function createWebSocketStore(url) {
   const { subscribe, set, update } = writable({
     websocket: null,
@@ -62,13 +64,21 @@ function createWebSocketStore(url) {
           for (let msg of data.message) {
             update((state) => ({...state, message: msg.user + ": " + msg.content}))
           }
-            
-          break;          
+          break;
+        case "user_list":
+          user_store.set(data.users);
+          break;
+        case "user_join":
+          user_store.update((state) => ([...state, data.user]))
+          break;
+        case "user_leave":
+          user_store.update((state) => (state.splice(state.indexOf(data.user), 1)))
+          break;     
         default:
           console.error("Unknown message type!");
           break;
       }
-    };
+    };``
 
     ws.onclose = () => {
       update((state) => ({ ...state, websocket: null, isConnected: false }));

@@ -6,13 +6,13 @@
     import UsersBar from "./users_bar.svelte";
     import { onMount } from "svelte";
     import Nav from "../navbar/nav.svelte"
-    import {userid} from "../store";
+    import {userid, user_store} from "../store";
     let roomsList = []
     let profilesList = []
     console.log($userid)
     onMount(() => {
         getRoomsList()
-        getProfilesList()
+        // getProfilesList()
     })
 
     async function getRoomsList() {
@@ -21,11 +21,10 @@
         roomsList = ["Dummy1", "Dummy2", "Dummy 3"] // <-- Placeholder
     }
 
-    async function getProfilesList() {
-        let apiProfiles = []
-        // TODO fetch profiles from API
-        profilesList = ["User 1", "User 2", "User 3"] // <-- Placeholder
-    }
+    // async function getProfilesList() {
+    //     let apiProfiles = []
+    //     profilesList = $user_store
+    // }
 
 </script>
 
@@ -39,7 +38,7 @@
                 <Ide/>
                 <Chatbox/>
             </div>
-            <UsersBar users={profilesList}/>
+            <UsersBar users={$user_store}/>
         </div>
     
     <!-- </div> -->

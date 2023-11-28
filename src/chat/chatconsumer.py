@@ -20,9 +20,9 @@ class ChatConsumer(WebsocketConsumer):
         # create/get room_name, create/get ide
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f'chat_{self.room_name}'
-        self.room = ChatRoom.objects.get_or_create(name=self.room_name)
-        print(self.room[0].id)
-        self.ide = IDE.objects.get_or_create(chat_room=self.room[0].id)
+        self.room = ChatRoom.objects.get_or_create(name=self.room_name)[0]
+        print(self.room.id)
+        self.ide = IDE.objects.get_or_create(chat_room_id=self.room.id)
         self.user = self.scope['user']
 
         if self.user.is_anonymous:
@@ -45,16 +45,15 @@ class ChatConsumer(WebsocketConsumer):
         }))
 
         #send notification
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
+        self.send(json.dumps(
             {
                 'type': 'user_join',
                 'user': self.user.username,
             }
-        )
+        ))
         
         # send last 30 messages
-        last_30 = [{'user':last.user.username,'content':last.content} for last in reversed(Message.objects.filter(room=self.room[0]).order_by('-timestamp')[:30])]
+        last_30 = [{'user':last.user.username,'content':last.content} for last in reversed(Message.objects.filter(room=self.room).order_by('-timestamp')[:30])]
         print(last_30)
         self.send(json.dumps(
             {
@@ -77,13 +76,12 @@ class ChatConsumer(WebsocketConsumer):
         print("ChatConsumer: disconnect")
 
         #send notification
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
+        self.send(json.dumps(
             {
                 'type': 'user_leave',
                 'user': self.user.username,
             }
-        )
+        ))
 
         # disconnect
         async_to_sync(self.channel_layer.group_discard)(
@@ -114,7 +112,7 @@ class ChatConsumer(WebsocketConsumer):
                 'message': message,
             }
         )
-        Message.objects.create(user=self.user, room=self.room[0], content=message)
+        Message.objects.create(user=self.user, room=self.room, content=message)
     
 
     def chat_message(self, event):
