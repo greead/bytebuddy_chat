@@ -96,7 +96,18 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name,
         )
+
+        #remove user from online
         self.room.online.remove(self.user)
+
+        # send the user list to the newly joined user
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+            'type': 'user_list',
+            'users': [user.username for user in self.room.online.all()],
+            }
+        )
     
 
     def receive(self, text_data=None, bytes_data=None):
