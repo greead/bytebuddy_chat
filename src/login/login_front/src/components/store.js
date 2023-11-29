@@ -19,6 +19,8 @@ export const displayName = writable('')
 
 export const bio= writable('')
 
+export const current_room = writable('')
+
 export async function handleCsrf(event) {
     let res = await fetch("http://localhost:8000/csrf/", {
         credentials: "include",
@@ -69,10 +71,10 @@ function createWebSocketStore(url) {
           user_store.set(data.users);
           break;
         case "user_join":
-          user_store.update((state) => ([...state, data.user]))
+          // user_store.update((state) => ([...state, data.user]))
           break;
         case "user_leave":
-          user_store.update((state) => (state.splice(state.indexOf(data.user), 1)))
+          // user_store.update((state) => (state.splice(state.indexOf(data.user), 1)))
           break;     
         default:
           console.error("Unknown message type!");

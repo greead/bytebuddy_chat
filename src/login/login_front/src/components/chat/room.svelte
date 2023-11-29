@@ -1,5 +1,5 @@
 <script>
-    import { uri, wss } from "../store";
+    import { uri, wss, current_room } from "../store";
     import { get } from "svelte/store";
 
     export let roomName = "Room";
@@ -8,15 +8,16 @@
         if (get($wss).isConnected){
             $wss.disconnectWebSocket()
         }
-        // TODO set WebSocket uri based on the ChatConsumer's syntax
-        uri.set('ws://localhost:8000/ws/chat/default/') // <-- Placeholder
+
+        uri.set(`ws://localhost:8000/ws/chat/${roomName.replaceAll(' ', '')}/`)
+        current_room.set(`${roomName}`)
         $wss.connectWebSocket()
     }
 
 </script>
 
 <div>
-    <button on:click={connectRoom} >{roomName}</button>
+    <button on:click={connectRoom}>{roomName}</button>
 </div>
 
 <style>

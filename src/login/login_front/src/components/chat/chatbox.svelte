@@ -17,7 +17,7 @@
     let inputMessage = ""
 
     onMount(() => {
-        loadMessages()
+        
     })
 
     onDestroy(() => {
@@ -33,12 +33,6 @@
         await $wss.sendMessage(inputMessage)
         
         scrollMessageAreaToBottom()
-    }
-
-    async function loadMessages() {
-        let apiMessages = []
-        // TODO Fetch messages from api
-        messageList = [apiMessages, ...messageList] // <-- Not a placeholder, don't change
     }
 
 </script>
