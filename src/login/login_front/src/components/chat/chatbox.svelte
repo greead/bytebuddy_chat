@@ -1,6 +1,7 @@
 <script>
     import { onDestroy, onMount } from "svelte";
-    import { uri, wss } from "../store";
+    import { uri, wss, message_list } from "../store";
+    import Message from "./message.svelte";
 
     let messageArea;
 
@@ -13,11 +14,17 @@
         }
     } 
 
-    let messageList = []
+    function handleEnterPressed(event) {
+        if ((event.key) === 'Enter') {
+            handleMessage();
+            
+        }
+    }
+
     let inputMessage = ""
 
     onMount(() => {
-        
+        scrollMessageAreaToBottom()
     })
 
     onDestroy(() => {
@@ -26,14 +33,14 @@
 
     $wss.subscribe((store) => {
         console.log("msg in sub", store.message)
-        messageList = [...messageList, store.message]
+        message_list.update((values) => ([...values, store.message]))
     })
 
     async function handleMessage(event) {
         await $wss.sendMessage(inputMessage)
         
         scrollMessageAreaToBottom()
-        document.getElementById('textBox').value='';
+        inputMessage = ''
     }
 
 </script>
@@ -41,14 +48,14 @@
 <div class="chatbox">
     <div id="messageArea" class="messageArea">        
         <ul role="listbox" bind:this={messageArea}>
-            {#each messageList as message, i}
-                <li class:even={i % 2 === 0} class:odd={i % 2 !== 0}>{message}</li>
+            {#each $message_list as message, i}
+                <li class:even={i % 2 === 0} class:odd={i % 2 !== 0}><Message user={message.user} message={message.content} /></li>
             {/each}
         </ul>
     </div>
     
     <div id="messageBox" class="messageBox">
-        <input bind:value={inputMessage} type="text" id="textBox" name="textBox" class="textBox">
+        <input bind:value={inputMessage} type="text" id="textBox" name="textBox" class="textBox" on:keypress={handleEnterPressed} autocomplete="off">
         <button on:click={handleMessage} class="submit">Send</button>
     </div>
 </div>

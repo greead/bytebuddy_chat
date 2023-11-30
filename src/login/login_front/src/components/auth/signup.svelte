@@ -2,7 +2,16 @@
     import {username, password, handleCsrf, csrf} from "../store.js"
     import {Link, navigate} from "svelte-routing";
     let signupError = null
-    let confirmPassword = null
+    let confirmPassword = '';
+    $: isMatching = $password === confirmPassword
+    $: isDisabled = $password == '' || $username == '' || !isMatching
+    $: console.log($password)
+
+    function handleEnterPressed(event) {
+        if ((event.key) === 'Enter') {
+            handleSignUp();
+        }
+    }
 
     /**
      * Event handler for the form submit event, makes an api call to the signup api using
@@ -12,7 +21,7 @@
     async function handleSignUp(event){
         event.preventDefault();
         signupError = null
-        if($password != $confirmPassword){
+        if($password != confirmPassword){
             signupError = "Passwords do not match"
         }
         else{
@@ -43,15 +52,20 @@
     }
     }   
 
-    function hoverOver(event){
-        event.target.style.color= "#0900ff";
-         event.target.style.backgroundColor="white";
-        }
+    // function hoverOver(event){
+    //     if (!isDisabled) {
+    //         event.target.style.color= "#0900ff";
+    //         event.target.style.backgroundColor="white";
+    //     }
+    // }
+        
   
-    function hoverOut(event){
-        event.target.style.color= "white";
-        event.target.style.backgroundColor="#0900ff";
-    }   
+    // function hoverOut(event){
+    //     if (!isDisabled) {
+    //         event.target.style.color= "white";
+    //         event.target.style.backgroundColor="#0900ff";
+    //     }
+    // }   
 
 </script>
 
@@ -69,19 +83,24 @@
     <div id="flexBox">
         <div class="idky">
             <lable for="email">Email: </lable>
-            <input bind:value={$username} type="text" id="email" name="email" style="input_item">
+            <input bind:value={$username} type="email" id="email" name="email" style="input_item" on:keypress={handleEnterPressed}>
         </div>
         <div class="idky">
             <lable for="pw">Password: </lable>
-            <input bind:value={$password} type="password" id="pw" name="pw">
+            <input bind:value={$password} type="password" id="pw" name="pw" on:keypress={handleEnterPressed}>
         </div>
         <div class="idky">
             <lable for="cpw">Confirm Password: </lable>
-            <input bind:value={$confirmPassword} type="password" id="cpw" name="cpw">
+            <input bind:value={confirmPassword} type="password" id="cpw" name="cpw" on:keypress={handleEnterPressed}>
         </div>
+        
     </div>
+    {#if !isMatching}
+        <p class="matching">Passwords do not match.</p>
+    {/if}
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <button id="button" on:mouseenter={hoverOver} on:mouseout={hoverOut} on:click={handleSignUp}>Sign Up</button>
+    <!-- on:mouseenter={hoverOver} on:mouseout={hoverOut}  -->
+    <button id="button" on:click={handleSignUp} disabled={isDisabled} class:disabled={isDisabled}>Sign Up</button>
     <p>Already have an account? Click <Link to="/login"> here </Link> to log in!</p>
 <!-- </form> -->
 
@@ -95,6 +114,10 @@
         font-family: "VT323", serif;
         font-size: 1.5em;
         height: 6em;
+    }
+
+    .matching {
+        color: red;
     }
 
     lable{
@@ -118,6 +141,10 @@
         padding-left: 1em;
         height:2em;
         font-family: "VT323", serif;
+    }
+
+    .disabled {
+        background-color: grey;
     }
 
     button{
