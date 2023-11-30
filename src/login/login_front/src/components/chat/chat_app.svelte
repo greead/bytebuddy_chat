@@ -45,8 +45,14 @@
 
 
 <style>
+    h2{
+        font-family: 'VT323';
+    }
+
     .divchatbox{
-        height:100%;
+        height:100% ;
+        display: flex;
+        flex-direction: column;
     }
 
     .system{

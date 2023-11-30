@@ -33,6 +33,7 @@
         await $wss.sendMessage(inputMessage)
         
         scrollMessageAreaToBottom()
+        document.getElementById('textBox').value='';
     }
 
 </script>
