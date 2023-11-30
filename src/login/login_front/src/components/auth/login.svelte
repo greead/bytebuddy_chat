@@ -9,6 +9,12 @@
      * the information given in the form inputs.
      * @param event The event caller
     */
+    function handleEnterPressed(event) {
+        if ((event.key) === 'Enter') {
+            handleLogin();
+        }
+    }
+
     async function handleLogin(event) {
         await handleCsrf()
         console.log($csrf)
@@ -59,11 +65,11 @@
     <div id="flexBox">
         <div class="idky">
             <lable for="email">Email: </lable>
-            <input bind:value={$username} type="text">
+            <input bind:value={$username} type="text" on:keypress={handleEnterPressed}>
         </div>
         <div class="idky">
             <lable for="pw">Password: </lable>
-            <input bind:value={$password} type="password">
+            <input bind:value={$password} type="password" on:keypress={handleEnterPressed}>
         </div>
     </div>
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
