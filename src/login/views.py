@@ -11,6 +11,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from chat.serializers import ProfileSerializer
+import base64
+from PIL import Image
+import io
+from django.core.files.base import ContentFile
 
 @ensure_csrf_cookie
 def get_csrf(request):
@@ -121,34 +125,53 @@ def get_profile(request):
         return JsonResponse(url)
     
     elif request.method == 'POST':
-        # data = json.loads(request.body)
-        user = models.User.objects.get(id=1)
-        print(request.POST)
-        serializer = ProfileSerializer(user, data=request.POST.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        userid= request.POST.get('userid', '')
-        print(userid)
-        name = request.POST.get('name', '')
-        print(name)
-        bio = request.POST.get('bio','')
-        print(bio)
-        pic = request.FILES.get('img')
+        data = json.loads(request.body)
+        # user = models.User.objects.get(id=1)
+        # print(request.POST)
+        # serializer = ProfileSerializer(user, data=request.POST.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        userid= data.get('userid')
+        # print(userid)
+        name = data.get('display_name')
+        # print(name)
+        bio = data.get('bio')
+        # print(bio)
+        base64_string= data.get('image')
+        # print(base64_string[0:100])
+        # # print(f"Image Data Size: {len(base64_string)} bytes")
+        # image_data = base64.b64decode(base64_string.encode('UTF-8'))
+        # print("Decoded bytes:", image_data[1:1000])
+        # image = Image.open(io.BytesIO(image_data))
+        # try:
+        #     image = Image.open(io.BytesIO(image_data))
+        # except Exception as e:
+        #     print(f"Error creating Image object: {e}")
+
+        format, imgstr = base64_string.split(';base64,')
+        ext = format.split('/')[-1]
+        data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+        # print(f"Image Data Size: {len(image_data)} bytes")
+        filename = f'{userid}_avatar.jpeg'
         try:
             user = models.User.objects.get(id=userid)
             profile= Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             return JsonResponse({'error': 'Image not found'}, status=404)
+        
         if (name is not None):
             profile.display_name = name
 
         if (bio is not None):
             profile.bio = bio
 
-        if(pic is not None):
-            profile.picture = pic
+        if(base64_string is not None):
+            profile.picture.save(filename, data, save=True)
+
+        profile.save()
+
         return JsonResponse({'detail': 'Successfully updated profile.'})
     
 # def whoami_view(request):

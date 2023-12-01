@@ -3,13 +3,12 @@
     import {displayName, bio,userid, csrf, handleCsrf, img, data} from "../store"
     console.log($userid)
     import { onMount } from 'svelte';
-    import basicProfile from '../../../../../media/images/basicProfile.png'
+    import basicProfile from '../../../public/media/images/basicProfile.png'
     onMount(() => {
         getPfp()
     });
 
     let isEditable = false;
-    let selectedFile;
     let avatar;
     // To-do:
     // views and urls are alreaday set up to return a url in json format
@@ -43,17 +42,12 @@
     async function getPfp(event) {
         // await handleCsrf()
         // console.log($userid)
-        const res = await fetch(`http://localhost:8000/profile?userid=${$userid}`)
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
+        const res = await fetch(`http://localhost:8000/profile?userid=${$userid}`);
 
-        // let dat = await res.json()
-        // console.log(dat)
-        // if ('image_url' in data) {
-            // dat.image_url = dat.image_url.replace('/media', '../../../../../media');
-        // }
-        // console.log(dat)
+        let dat = await res.json()
+        // dat.image_url = dat.image_url.replace('media', '../../../../../media');
+        avatar = "/media"+ dat.image_url;
+        console.log(avatar)
     }
 
     function toggleEditable() {
@@ -64,12 +58,19 @@
       // Add your form submission logic her
       console.log('Form submitted!');
       isEditable = false; // After submission, make the form non-editable again
-      const formData = new FormData();
-      formData.append('userid',$userid)
-      formData.append('image', $img);
-      formData.append('bio', $bio);
-      formData.append('display_name', $displayName);
 
+      // let binaryString = String.fromCharCode.apply(null, new Uint8Array($img));
+      // let base64Data = btoa(binaryString);
+
+      // const formData = new FormData();
+      // formData.append('userid',$userid)
+      // formData.append('image', $img);
+      // formData.append('bio', $bio);
+      // formData.append('display_name', $displayName);
+      // console.log($displayName)
+      // console.log($bio)
+      // console.log($img)
+    
       await handleCsrf()
         // console.log($csrf)
         // console.log('csrftoken:', $csrf)
@@ -81,27 +82,29 @@
                 "X-CSRFToken": $csrf,
             },
             credentials: "include",
-            body: formData,
+            body: JSON.stringify({
+              'userid':$userid,
+              'display_name':$displayName,
+              'bio':$bio,
+              'image':$img
+            }),
     })
-
-        let dat = await res.json()
-        // console.log(dat)
-        // if ('image_url' in data) {
-            dat.image_url = dat.image_url.replace('/media', '../../../../../media');
-        // }
-        console.log(dat)
     }
 
     function handleFileInputChange(event) {
         const fileInput = event.target;
-        $img = fileInput.files[0];
+        let image = fileInput.files[0];
+        // console.log($img)
+
         // console.log(selectedFile)
         let reader = new FileReader();
         reader.onload = function (e) {
         // Set the source of the image to the data URL obtained from FileReader
+            $img = e.target.result;
             avatar = e.target.result;
+            console.log($img)
       };
-            reader.readAsDataURL($img);
+            reader.readAsDataURL(image);
   }
 
 </script>
@@ -111,16 +114,16 @@
 <!-- To-do: need to add a box for profile picture and position things around -->
 <div id= "full-page">
     {#if avatar}
-      <img id="avatar" class="flex-item" src={avatar} alt="Profile" width="20%">
+      <img id="avatar" class="flex-item" src={avatar} alt="Profile">
     {:else}
-      <img id="avatar" class="flex-item" src={basicProfile} alt="Profile" width="20%">
+      <img id="avatar" class="flex-item" src={basicProfile} alt="Profile">
     {/if}
     
     <!-- <form on:submit|preventDefault={handleSubmit} class="flex-item"> -->
     <div class="form flex-item">
       <!-- Your form fields go here -->
       <div class="form-inside">
-        <lable for="displayName">DisplayName </lable>
+        <lable for="displayName">Alias </lable>
         <input bind:value={$displayName} type="text" id="displayName" name="displayName" style="input_item" disabled= { !isEditable}>
     </div>
    
@@ -156,10 +159,18 @@
         height:50vw;
     }
 
+    img{
+        object-fit: cover;
+        width: 20%; /* Ensure the image takes 100% of the container width */
+        height: 40%;
+        border-radius: 1em;
+        }
+
     .flex-item{
         /* margin:3vw; */
-        margin-bottom: 3vw;
-        height:20vw;
+        margin-top: 2vw;
+        margin-bottom: 1vw;
+        /* height:20vw; */
     }
 
     .form{
@@ -169,6 +180,11 @@
         align-items: center;
         justify-content: space-evenly;
         font-family: 'VT323';
+    }
+
+    lable{
+      border: 2 em;
+      border-color: black;
     }
 
     .form-inside{
@@ -181,17 +197,23 @@
         color:white;
         font-size:2em;
     }
+  lable{
+      color:white;
+      padding-left:5%;
+    }
 
     input{
         font-family: 'VT323';
         width: 18vw;
         height: 1.5vw;
         font-size: 0.75em;
-        padding: 1 em;
+        margin-right:5%;
+        border-radius:.3em;
+        padding-left: 1.1%;
     }
 
     textarea{
-        padding: 0.15em;
+        padding-left: 1.1%;
         font-family: 'VT323';
         width: 18vw;
         height: 10vw;
@@ -199,6 +221,8 @@
         resize: horizontal;
         line-height: 1;
         overflow-x: scroll;
+        margin-right:5%;
+        border-radius:.3em;
 }
     #fileInput{
     
