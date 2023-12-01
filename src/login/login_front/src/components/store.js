@@ -43,6 +43,14 @@ export async function handleCsrf(event) {
 // CHAT STORE //
 export const uri = writable('')
 
+export const uri_ide = writable('')
+
+let ide_previous = ''
+
+export const ide_contents = writable('')
+
+export const isUnchanged = derived(ide_contents, ($ide_contents) => $ide_contents === ide_previous)
+
 export const user_store = writable([])
 
 export const message_list = writable([])
@@ -51,7 +59,6 @@ function createWebSocketStore(url) {
   const { subscribe, set, update } = writable({
     websocket: null,
     message: '',
-    // message_bundle: [],
     isConnected: false,
   });
 
@@ -130,7 +137,68 @@ function createWebSocketStore(url) {
   };
 };
 
+function createIDESocketStore(url) {
+  const { subscribe, set, update } = writable({
+    websocket: null,
+    isConnected: false,
+  });
+
+  let ws;
+
+  const connectWebSocket = () => {
+    ws = new WebSocket(url);
+
+    ws.onopen = () => {
+      update((state) => ({ ...state, websocket: ws, isConnected: true }));
+      console.log('WebSocket opened at:', url);
+    };
+
+    ws.onmessage = (event) => {
+      // update((state) => ({ ...state, message: event.data }));
+      // console.log('WebSocket message received:', event.data)
+      const data = JSON.parse(event.data);
+      console.log(data);
+      if (data.type === "ide_message") {
+        ide_contents.set(data.message)
+        ide_previous = data.message
+      }
+    };
+
+    ws.onclose = () => {
+      update((state) => ({ ...state, websocket: null, isConnected: false }));
+      console.log('WebSocket closed at:', url)
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  };
+
+  const disconnectWebSocket = () => {
+    if (ws) {
+      ws.close();
+    }
+  };
+
+  const sendMessage = (msg) => {
+    if(ws.readyState === ws.OPEN) {
+        ws.send(JSON.stringify({
+          "message":msg
+        }));
+        console.log('WebSocket message sent:', msg)
+    }
+  };
+
+  return {
+    subscribe,
+    connectWebSocket,
+    disconnectWebSocket,
+    sendMessage,
+  };
+};
+
 export const wss = derived(uri, ($uri) => createWebSocketStore($uri));
+export const wss_ide = derived(uri_ide, ($uri_ide) => createIDESocketStore($uri_ide))
 
 // CHAT STORE //
 
