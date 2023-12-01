@@ -41,4 +41,5 @@ class Profile(models.Model):
 
 class IDE(models.Model):
     code = models.CharField(default='', max_length=1000)
+    name = models.CharField(max_length=128 )
     chat_room = models.OneToOneField("ChatRoom", verbose_name=("chat_room"), on_delete=models.CASCADE)

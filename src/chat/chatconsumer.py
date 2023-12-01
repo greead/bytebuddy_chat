@@ -21,7 +21,6 @@ class ChatConsumer(WebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f'chat_{self.room_name}'
         self.room = ChatRoom.objects.get_or_create(name=self.room_name)[0]
-        self.ide = IDE.objects.get_or_create(chat_room_id=self.room.id)
         self.user = self.scope['user']
 
         if self.user.is_anonymous:
@@ -39,6 +38,9 @@ class ChatConsumer(WebsocketConsumer):
 
         # add user as online
         self.room.online.add(self.user)
+
+        # get all online users
+        # for each user, get their display_name and profile picture from profile model
 
         # send the user list to the newly joined user
         async_to_sync(self.channel_layer.group_send)(

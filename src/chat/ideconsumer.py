@@ -13,15 +13,17 @@ class IDEConsumer(WebsocketConsumer):
         
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"ide_{self.room_name}"
+        self.ide = IDE.objects.get_or_create(name=self.room_name)[0]
 
-        #allow connections
-        self.accept()
+        if self.ide:
+            #allow connections
+            self.accept()
 
-        # join the room group
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name,
-        )
+            # join the room group
+            async_to_sync(self.channel_layer.group_add)(
+                self.room_group_name,
+                self.channel_name,
+            )
 
     
     def disconnect(self, code):
