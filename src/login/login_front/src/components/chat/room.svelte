@@ -1,8 +1,15 @@
 <script>
+    import { onMount } from "svelte";
     import { uri, wss, current_room } from "../store";
     import { get } from "svelte/store";
 
     export let roomName = "Room";
+
+    onMount(() => {
+        if (roomName === "Home") {
+            connectRoom()
+        }
+    })
 
     async function connectRoom() {
         if (get($wss).isConnected){
