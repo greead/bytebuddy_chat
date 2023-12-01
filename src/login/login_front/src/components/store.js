@@ -13,11 +13,21 @@ export const password = writable('')
 
 export const data = writable()
 
-export const userid = writable('')
+// export const userid = writable('')
+export const userid = writable(localStorage.getItem("userid") || "");
+userid.subscribe(val => localStorage.setItem("userid", val));
+
+//Kole: is this my work?
+// function getStoredUser() {
+//   const storedUser = localStorage.getItem('userid');
+//   return storedUser ? JSON.parse(storedUser) : { id: null, username: null };
+// }
 
 export const displayName = writable('')
 
 export const bio= writable('')
+
+export const img= writable('')
 
 export const current_room = writable('')
 

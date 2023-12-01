@@ -8,6 +8,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='api-logout'),
     path('session/', views.session_view, name='api-session'),
     path('signup/', views.signup_view, name='api-signup'),
-    path('profilePicture/', views.get_profile_picture, name='api-profile-picture')
+    path('profilePicture/', views.get_profile_picture, name='api-profile-picture'),
+    path('profile/', views.get_profile, name='api-profile-picture')
     # path('whoami/', views.whoami_view, name='api-whoami'),
 ]
