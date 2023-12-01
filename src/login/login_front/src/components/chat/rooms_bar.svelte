@@ -8,9 +8,11 @@
 
 <div >
     <p>Rooms</p>
-    {#each rooms as room}
-        <Room roomName={room}/>
-    {/each}
+    {#if rooms}
+        {#each rooms as room}
+            <Room roomName={room}/>
+        {/each}
+    {/if}
 </div>
 
 <style>
