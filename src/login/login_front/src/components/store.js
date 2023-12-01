@@ -83,10 +83,10 @@ function createWebSocketStore(url) {
           user_store.set(data.users);
           break;
         case "user_join":
-          // user_store.update((state) => ([...state, data.user]))
+          message_list.update((list) => ([...list, {user:data.user, content:data.message, sys:true}]))
           break;
         case "user_leave":
-          // user_store.update((state) => (state.splice(state.indexOf(data.user), 1)))
+          message_list.update((list) => ([...list, {user:data.user, content:data.message, sys:true}]))
           break;     
         default:
           console.error("Unknown message type!");

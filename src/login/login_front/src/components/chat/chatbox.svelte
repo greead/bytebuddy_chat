@@ -49,7 +49,7 @@
     <div id="messageArea" class="messageArea">        
         <ul role="listbox" bind:this={messageArea}>
             {#each $message_list as message, i}
-                <li class:even={i % 2 === 0} class:odd={i % 2 !== 0}><Message user={message.user} message={message.content} /></li>
+                <li class:even={i % 2 === 0} class:odd={i % 2 !== 0}><Message user={message.user} message={message.content} system={message.sys}/></li>
             {/each}
         </ul>
     </div>
