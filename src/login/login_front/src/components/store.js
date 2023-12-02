@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
 
 // AUTH STORE //
 export const csrf = writable('');
@@ -47,7 +47,7 @@ export const uri_ide = writable('')
 
 let ide_previous = ''
 
-export const ide_contents = writable('')
+export const ide_contents = writable()
 
 export const isUnchanged = derived(ide_contents, ($ide_contents) => $ide_contents === ide_previous)
 
@@ -157,10 +157,13 @@ function createIDESocketStore(url) {
       // update((state) => ({ ...state, message: event.data }));
       // console.log('WebSocket message received:', event.data)
       const data = JSON.parse(event.data);
-      console.log(data);
+      console.log("RECEIVED", data);
       if (data.type === "ide_message") {
-        ide_contents.set(data.message)
-        ide_previous = data.message
+        if (data.user != get(username)) {
+          ide_contents.set(data.message)
+        }
+        
+        // ide_previous = data.message
       }
     };
 
@@ -180,9 +183,9 @@ function createIDESocketStore(url) {
     }
   };
 
-  const sendMessage = (msg) => {
+  const sendMessage = async (msg) => {
     if(ws.readyState === ws.OPEN) {
-        ws.send(JSON.stringify({
+        await ws.send(JSON.stringify({
           "message":msg
         }));
         console.log('WebSocket message sent:', msg)

@@ -14,6 +14,7 @@ class IDEConsumer(WebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"ide_{self.room_name}"
         self.ide = IDE.objects.get_or_create(name=self.room_name)[0]
+        self.user = self.scope['user']
 
         if self.ide:
             #allow connections
@@ -45,12 +46,15 @@ class IDEConsumer(WebsocketConsumer):
 
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        sender_channel = self.channel_name
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'ide_message',
-                'message': message
+                'message': message,
+                'sender_channel': sender_channel,
+                'user': self.user.username
             }
         )
     
@@ -59,5 +63,5 @@ class IDEConsumer(WebsocketConsumer):
             Called when sending code changes to chatroom
         '''
         print("IDEConsumer: ide_message")
-
-        self.send(text_data=json.dumps(event))
+        if self.channel_name != event['sender_channel']:
+            self.send(text_data=json.dumps(event))
