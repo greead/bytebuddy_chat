@@ -5,6 +5,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
+        lookup_field = 'user_id'
 
 class ChatRoomSerializer(serializers.ModelSerializer):
     class Meta:

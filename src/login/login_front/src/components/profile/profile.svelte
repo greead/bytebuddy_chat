@@ -62,11 +62,11 @@
       // let binaryString = String.fromCharCode.apply(null, new Uint8Array($img));
       // let base64Data = btoa(binaryString);
 
-      // const formData = new FormData();
-      // formData.append('userid',$userid)
-      // formData.append('image', $img);
-      // formData.append('bio', $bio);
-      // formData.append('display_name', $displayName);
+      const formData = new FormData();
+      formData.append('userid',$userid)
+      formData.append('image', $img);
+      formData.append('bio', $bio);
+      formData.append('display_name', $displayName);
       // console.log($displayName)
       // console.log($bio)
       // console.log($img)
@@ -75,19 +75,13 @@
         // console.log($csrf)
         // console.log('csrftoken:', $csrf)
         // console.log($userid)
-        let res = await fetch("http://localhost:8000/profile/", {
+        let res = await fetch("http://localhost:8000/chat/image/", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "X-CSRFToken": $csrf,
             },
             credentials: "include",
-            body: JSON.stringify({
-              'userid':$userid,
-              'display_name':$displayName,
-              'bio':$bio,
-              'image':$img
-            }),
+            body: formData,
     })
     }
 

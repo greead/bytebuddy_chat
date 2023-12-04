@@ -1,3 +1,6 @@
+import json 
+import base64
+from django.core.files.base import ContentFile
 from django.shortcuts import render
 from .serializers import ProfileSerializer, IDESerializer
 from django.shortcuts import render
@@ -53,7 +56,7 @@ def UserprofilewithID(request,id):
 def startapp(request):
     return render(request, 'index.html')
 
-@api_view(['GET','PUT'])
+@api_view(['GET','PUT', 'POST'])
 def ide_view(request, chatroom_id):
 
     ide = IDE.objects.get(pk=chatroom_id)
@@ -75,3 +78,22 @@ def ide_view(request, chatroom_id):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+
+def profile_view(request):
+
+    user_profile = Profile.objects.get(pk=request.data['userid'])
+
+    if user_profile:
+        print(user_profile.display_name)
+
+    format, imgstr = request.data['image'].split(';base64,')
+    ext = format.split('/')[-1] 
+    data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+    
+    user_profile.picture = data
+    user_profile.save()
+
+    return Response(status=status.HTTP_200_OK)
