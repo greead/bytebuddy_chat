@@ -25,6 +25,15 @@ class IDEConsumer(WebsocketConsumer):
                 self.room_group_name,
                 self.channel_name,
             )
+        
+        # send last saved code in ide
+        self.send(json.dumps(
+            {
+                'type': 'ide_message',
+                'user': self.user.username,
+                'message': self.ide.code
+            }
+        ))
 
     
     def disconnect(self, code):
@@ -57,6 +66,10 @@ class IDEConsumer(WebsocketConsumer):
                 'user': self.user.username
             }
         )
+
+        #save full current state to database
+        self.ide.code = message['current_state']
+        self.ide.save()
     
     def ide_message(self, event):
         '''

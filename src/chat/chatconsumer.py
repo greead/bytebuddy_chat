@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 import json
 
-from .models import ChatRoom, Message, IDE
+from .models import ChatRoom, Message, IDE, Profile
 
 class ChatConsumer(WebsocketConsumer):
     '''
@@ -39,15 +39,21 @@ class ChatConsumer(WebsocketConsumer):
         # add user as online
         self.room.online.add(self.user)
 
-        # get all online users
-        # for each user, get their display_name and profile picture from profile model
-
         # send the user list to the newly joined user
+        # TODO: Get user profile info (display_name/image path) and return
+        active_users_and_images = []
+
+        for user in self.room.online.all():
+             qs = Profile.objects.filter(user=user)
+             if qs.exists():
+                active_users_and_images.append({"user":qs[0].display_name, "image": qs[0].picture.url})
+
+
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
             'type': 'user_list',
-            'users': [user.username for user in self.room.online.all()],
+            'message': active_users_and_images,
             }
         )
 
@@ -102,12 +108,20 @@ class ChatConsumer(WebsocketConsumer):
         #remove user from online
         self.room.online.remove(self.user)
 
-        # send the user list to the newly joined user
+        # send the updated user list
+        active_users_and_images = []
+
+        for user in self.room.online.all():
+             qs = Profile.objects.filter(user=user)
+             if qs.exists():
+                active_users_and_images.append({"user":qs[0].display_name, "image": qs[0].picture.url})
+
+
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
             'type': 'user_list',
-            'users': [user.username for user in self.room.online.all()],
+            'message': active_users_and_images,
             }
         )
     
