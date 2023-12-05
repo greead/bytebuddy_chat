@@ -87,13 +87,24 @@ def profile_view(request):
     user_profile = Profile.objects.get(pk=request.data['userid'])
 
     if user_profile:
-        print(user_profile.display_name)
 
-    format, imgstr = request.data['image'].split(';base64,')
-    ext = format.split('/')[-1] 
-    data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-    
-    user_profile.picture = data
-    user_profile.save()
+        if request.data['image']:
+            filename = f'{userid}_avatar.jpeg'
+            format, imgstr = request.data['image'].split(';base64,')
+            ext = format.split('/')[-1] 
+            data = ContentFile(base64.b64decode(imgstr), name=filename + ext)
+        
+        if (name is not None):
+            user_profile.display_name = name
 
-    return Response(status=status.HTTP_200_OK)
+        if (bio is not None):
+            user_profile.bio = bio
+
+        if(data is not None):
+            user_profile.picture.save(filename, data, save=True)
+        
+        user_profile.save()
+
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Respons(status=status.HTTP_400_BAD_REQUEST)
