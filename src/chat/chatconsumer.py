@@ -22,6 +22,7 @@ class ChatConsumer(WebsocketConsumer):
         self.room_group_name = f'chat_{self.room_name}'
         self.room = ChatRoom.objects.get_or_create(name=self.room_name)[0]
         self.user = self.scope['user']
+        self.display_name = Profile.objects.filter(user=self.user)
 
         if self.user.is_anonymous:
             self.close_during_connect(code=4401)
@@ -67,18 +68,25 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'user_join',
-                'user': self.user.username,
-                'message': f"{self.user.username} joined the chat"
+                'user': self.display_name,
+                'message': f"{self.display_name} joined the chat"
             }
         )
         
         # send last 30 messages
-        last_30 = [{'user':last.user.username,'content':last.content} for last in reversed(Message.objects.filter(room=self.room).order_by('-timestamp')[:30])]
+        last_30_messages = []
+        messages = Message.objects.filter(room=self.room).order_by('-timestamp')[:30]
+        for message in reversed(messages):
+            user_profile = Profile.objects.filter(user=message.user)
+            if user_profile.exists():
+                last_30_messages.append({'user': user_profile[0].display_name, 'content': message.content})
+            else:
+                last_30_messages.append({'user': message.user.username, 'content': message.content})
         self.send(json.dumps(
             {
                 'type': 'message_list',
-                'user': self.user.username,
-                'message': last_30
+                'user': self.display_name,
+                'message': last_30_messages
             }
         ))
 
@@ -99,8 +107,8 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'user_leave',
-                'user': self.user.username,
-                'message': f"{self.user.username} has left the chat"
+                'user': self.display_name,
+                'message': f"{self.display_name} has left the chat"
             }
         )
 
@@ -148,7 +156,7 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'user': self.user.username,
+                'user': self.display_name,
                 'message': message,
             }
         )
