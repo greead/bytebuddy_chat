@@ -49,6 +49,8 @@ let ide_previous = ''
 
 export const ide_contents = writable()
 
+export const ide_state = writable("")
+
 export const isUnchanged = derived(ide_contents, ($ide_contents) => $ide_contents === ide_previous)
 
 export const user_store = writable([])
@@ -158,12 +160,14 @@ function createIDESocketStore(url) {
       // console.log('WebSocket message received:', event.data)
       const data = JSON.parse(event.data);
       console.log("RECEIVED", data);
-      if (data.type === "ide_message") {
-        if (data.user != get(username)) {
-          ide_contents.set(data.message)
-        }
-        
-        // ide_previous = data.message
+      switch (data.type) {
+        case "ide_message":
+          if (data.user != get(username)) {
+            ide_contents.set(data.message)
+          }
+          break;
+        case "ide_connect":
+          ide_state.set(data.message)
       }
     };
 

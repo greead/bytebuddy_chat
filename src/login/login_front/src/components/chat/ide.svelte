@@ -7,7 +7,7 @@
     import "brace/ext/searchbox";
     import "brace/snippets/python"
     import "brace/ext/language_tools"
-    import { ide_contents, wss_ide, isUnchanged, username } from "../store"
+    import { ide_contents, wss_ide, isUnchanged, username, ide_state } from "../store"
     import { onDestroy, onMount } from "svelte";
 
     let editor: ace.Editor;
@@ -24,13 +24,20 @@
 
         ide_contents.subscribe((delta) => {
             if(delta) {
+                console.log('FROM SUB', delta)
                 if (delta.user != $username) {
                     editor.off('change', onChangeHandler)
                     editor.getSession().getDocument().applyDeltas([delta])
                     editor.on('change', onChangeHandler)
                 }                
-                console.log('FROM SUB', delta)
+                
             } 
+        })
+
+        ide_state.subscribe((state) => {
+            editor.off('change', onChangeHandler)
+            editor.setValue(state)
+            editor.on('change', onChangeHandler)
         })
     })
 
