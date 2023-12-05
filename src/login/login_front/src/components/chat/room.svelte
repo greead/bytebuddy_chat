@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import { uri, uri_ide, wss_ide, wss, current_room, message_list, ide_contents } from "../store";
+    import { uri, uri_ide, wss_ide, wss, current_room, message_list, ide_contents, ide_state } from "../store";
     import { get } from "svelte/store";
 
     export let roomName = "Room";
@@ -13,7 +13,7 @@
 
     async function connectRoom() {
         message_list.set([])
-        ide_contents.set('')
+        ide_state.set('')
 
         if (get($wss).isConnected){
             $wss.disconnectWebSocket()

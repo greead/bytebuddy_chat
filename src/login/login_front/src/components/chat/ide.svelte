@@ -19,7 +19,6 @@
         editor.setTheme('ace/theme/tomorrow_night_bright')
         editor.setOptions(options)
         editor.on('change', onChangeHandler)
-        // editor.on('change', onChangeHandler)
         editor.$blockScrolling = Infinity
 
         ide_contents.subscribe((delta) => {

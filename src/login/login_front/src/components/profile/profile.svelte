@@ -122,11 +122,11 @@
       <div class="form-inside">
         <!-- <lable for="bio">Bio</lable>
         <textarea bind:value={$bio} id="bio" name="bio" disabled= { !isEditable}></textarea> -->
-     </div>
+      </div>
 
       <div class="form-inside file-upload-box">
             <lable>Avatar</lable>
-            <input type="file" id="fileInput" accept=".png, .jpg, .jpeg" on:change={handleFileInputChange} disabled= { !isEditable}/>
+            <input class="choose_file" type="file" id="fileInput" accept=".png, .jpg, .jpeg" on:change={handleFileInputChange} disabled= { !isEditable}/>
             <!-- <span class="file-upload-label">{selectedFile ? selectedFile.name : 'No file chosen'}</span> -->
       </div>
       {#if isEditable}
@@ -162,6 +162,10 @@
         margin-top: 2vw;
         margin-bottom: 1vw;
         /* height:20vw; */
+    }
+
+    .choose_file {
+        height: max-content;
     }
 
     .form{
