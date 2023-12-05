@@ -36,7 +36,7 @@ class Profile(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=16)
     bio = models.CharField(max_length=256)
-    picture = models.ImageField(upload_to='images/', default='media/images/basicProfile.png', blank=True)
+    picture = models.ImageField(upload_to='images/', default='images/basicProfile.png', blank=True)
 
 
 class IDE(models.Model):

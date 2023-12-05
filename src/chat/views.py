@@ -87,9 +87,10 @@ def profile_view(request):
     user_profile = Profile.objects.get(pk=request.data['userid'])
 
     if user_profile:
-        userid= data.get('userid')
-        name = data.get('display_name')
-        bio = data.get('bio')
+        # data = json.loads(request.body)
+        userid= request.data['userid']
+        name = request.data['display_name']
+        bio = request.data['bio']
 
         if request.data['image']:
             filename = f'{userid}_avatar.jpeg'
@@ -110,4 +111,4 @@ def profile_view(request):
 
         return Response(status=status.HTTP_200_OK)
     else:
-        return Respons(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

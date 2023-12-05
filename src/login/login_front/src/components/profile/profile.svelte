@@ -11,12 +11,7 @@
 
     let isEditable = false;
     let avatar;
-    // To-do:
-    // views and urls are alreaday set up to return a url in json format
-    // need to figure out a way to send post request to backend server
-    // right now, if I refresh page, userID, sessionID and CSRF are also reset
-    // so, I couldn't use them. Also, since we have sessionID, should we use it instead of CSRF
-    
+
     // async function getPfp(event) {
     //     await handleCsrf()
     //     // console.log($csrf)
@@ -41,12 +36,10 @@
     // }
 
     async function getPfp(event) {
-        // await handleCsrf()
-        // console.log($userid)
         const res = await fetch(`http://localhost:8000/profile?userid=${$userid}`);
 
         let dat = await res.json()
-        // dat.image_url = dat.image_url.replace('media', '../../../../../media');
+        //url returned is /image/xxx.jpeg and svelte will only search in the public folder --> need 
         avatar = dat.image_url;
         console.log(avatar)
     }
@@ -97,7 +90,7 @@
         // Set the source of the image to the data URL obtained from FileReader
             img.set(String(e.target.result));
             avatar = e.target.result;
-            console.log($img)
+            // console.log($img)xs
       };
             reader.readAsDataURL(image);
   }
@@ -111,11 +104,11 @@
   
     <!-- <img id="avatar" src={"http://localhost:5173/" + avatar} alt="img"> -->
  
-    {#if avatar}
+    <!-- {#if avatar} -->
       <img id="avatar" class="flex-item" src={avatar} alt="Profile">
-    {:else}
-      <img id="avatar" class="flex-item" src={"http://localhost:5173/" + basicProfile} alt="Profile">
-    {/if}
+    <!-- {:else} -->
+      <!-- <img id="avatar" class="flex-item" src={"http://localhost:5173/" + basicProfile} alt="Profile"> -->
+    <!-- {/if} -->
     
     <!-- <form on:submit|preventDefault={handleSubmit} class="flex-item"> -->
     <div class="form flex-item">

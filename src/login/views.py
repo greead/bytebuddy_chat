@@ -120,8 +120,10 @@ def get_profile(request):
         except Profile.DoesNotExist:
             return JsonResponse({'error': 'Image not found'}, status=404)
         url = {
-            'image_url': profile.picture.url if profile.picture.url else None,
+            'image_url': "/media" +profile.picture.url if profile.picture.url else None,
         }
+        # print(type(profile.picture))
+        # print(type(profile.picture.url))
         return JsonResponse(url)
     
     elif request.method == 'POST':

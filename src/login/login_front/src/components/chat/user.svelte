@@ -9,7 +9,7 @@
 </script>
 
 <div>
-    <img src={"http://localhost:5173/" + profile_picture} alt="img"><span>{display_name}</span>
+    <img src={"http://localhost:5173/media" + profile_picture} alt="img"><span>{display_name}</span>
 </div>
 
 <style>
