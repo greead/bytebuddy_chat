@@ -87,6 +87,9 @@ def profile_view(request):
     user_profile = Profile.objects.get(pk=request.data['userid'])
 
     if user_profile:
+        userid= data.get('userid')
+        name = data.get('display_name')
+        bio = data.get('bio')
 
         if request.data['image']:
             filename = f'{userid}_avatar.jpeg'
