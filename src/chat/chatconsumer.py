@@ -43,10 +43,15 @@ class ChatConsumer(WebsocketConsumer):
         # TODO: Get user profile info (display_name/image path) and return
         active_users_and_images = []
 
+        print("ROOM ONLINE", self.room.online.all())
         for user in self.room.online.all():
-             qs = Profile.objects.filter(user=user)
+             print("USER", user)
+             qs = Profile.objects.filter(user=user)             
+             print("QS", qs)
              if qs.exists():
                 active_users_and_images.append({"user":qs[0].display_name, "image": qs[0].picture.url})
+                print("PROFILE", {"user":qs[0].display_name, "image": qs[0].picture.url})
+
 
 
         async_to_sync(self.channel_layer.group_send)(

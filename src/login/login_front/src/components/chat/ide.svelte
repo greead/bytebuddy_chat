@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import * as ace from 'brace'
     import 'brace/mode/javascript'
     import "brace/mode/python";
@@ -10,9 +10,10 @@
     import { ide_contents, wss_ide, isUnchanged, username } from "../store"
     import { onDestroy, onMount } from "svelte";
 
-    // let sendFlag = true
+    let editor: ace.Editor;
+
     onMount(() => {
-        let editor = ace.edit('editor');
+        editor = ace.edit('editor');
         let options = {"fontSize":16, "scrollPastEnd":true, enableBasicAutocompletion: true, enableSnippets: true, enableLiveAutocompletion: true,}
         editor.getSession().setMode('ace/mode/python')
         editor.setTheme('ace/theme/tomorrow_night_bright')
@@ -36,7 +37,7 @@
 
 
     function onChangeHandler(event) {
-        $wss_ide.sendMessage({...event, user:$username})
+        $wss_ide.sendMessage({...event, user:$username, current_state:editor.getValue()})
         console.log("CHANGE", event)        
     }
 

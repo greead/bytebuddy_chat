@@ -87,7 +87,7 @@ function createWebSocketStore(url) {
           message_list.set(data.message)
           break;
         case "user_list":
-          user_store.set(data.users);
+          user_store.set(data.message);
           break;
         case "user_join":
           message_list.update((list) => ([...list, {user:data.user, content:data.message, sys:true}]))

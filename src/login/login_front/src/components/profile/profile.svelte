@@ -3,7 +3,8 @@
     import {displayName, bio,userid, csrf, handleCsrf, img, data} from "../store"
     console.log($userid)
     import { onMount } from 'svelte';
-    import basicProfile from '../../../public/media/images/basicProfile.png'
+
+    const basicProfile = 'media/images/basicProfile.png'
     onMount(() => {
         getPfp()
     });
@@ -46,7 +47,7 @@
 
         let dat = await res.json()
         // dat.image_url = dat.image_url.replace('media', '../../../../../media');
-        avatar = "/media"+ dat.image_url;
+        avatar = dat.image_url;
         console.log(avatar)
     }
 
@@ -94,7 +95,7 @@
         let reader = new FileReader();
         reader.onload = function (e) {
         // Set the source of the image to the data URL obtained from FileReader
-            $img = e.target.result;
+            img.set(String(e.target.result));
             avatar = e.target.result;
             console.log($img)
       };
@@ -107,10 +108,13 @@
 
 <!-- To-do: need to add a box for profile picture and position things around -->
 <div id= "full-page">
+  
+    <!-- <img id="avatar" src={"http://localhost:5173/" + avatar} alt="img"> -->
+ 
     {#if avatar}
       <img id="avatar" class="flex-item" src={avatar} alt="Profile">
     {:else}
-      <img id="avatar" class="flex-item" src={basicProfile} alt="Profile">
+      <img id="avatar" class="flex-item" src={"http://localhost:5173/" + basicProfile} alt="Profile">
     {/if}
     
     <!-- <form on:submit|preventDefault={handleSubmit} class="flex-item"> -->
@@ -122,7 +126,7 @@
     </div>
    
       
-      <div class="form-inside" disabled= { !isEditable}>
+      <div class="form-inside">
         <lable for="bio">Bio</lable>
         <textarea bind:value={$bio} id="bio" name="bio" disabled= { !isEditable}></textarea>
      </div>

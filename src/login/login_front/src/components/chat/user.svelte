@@ -1,14 +1,15 @@
 <script>
-    export let name = "User";
     // export let pfp = "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
     // export let pfp = 'media/images/basicProfile.png'
-    import basicProfile from '../../../../../media/images/basicProfile.png'
+    // import basicProfile from '/images/basicProfile.png'
+
+    export let display_name = "User";
+    export let profile_picture = "http://localhost:5173/media/images/basicProfile.png";
     // import basicProfile from '/media/images/basicProfile.png'
 </script>
 
 <div>
-    <!-- TO-DO: return api or chatroom consumer to return all users along with their profile picture url -->
-    <img src={basicProfile} alt={basicProfile}><span>{name}</span>
+    <img src={"http://localhost:5173/" + profile_picture} alt="img"><span>{display_name}</span>
 </div>
 
 <style>

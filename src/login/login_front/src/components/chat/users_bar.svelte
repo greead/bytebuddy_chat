@@ -7,7 +7,7 @@
 <div >
     <p>Active Users</p>
     {#each users as user}
-        <User name={user}/>
+        <User display_name={user.user} profile_picture={user.image}/>
     {/each}
 </div>
 
