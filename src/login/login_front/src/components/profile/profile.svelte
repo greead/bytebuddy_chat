@@ -120,8 +120,8 @@
    
       
       <div class="form-inside">
-        <lable for="bio">Bio</lable>
-        <textarea bind:value={$bio} id="bio" name="bio" disabled= { !isEditable}></textarea>
+        <!-- <lable for="bio">Bio</lable>
+        <textarea bind:value={$bio} id="bio" name="bio" disabled= { !isEditable}></textarea> -->
      </div>
 
       <div class="form-inside file-upload-box">
