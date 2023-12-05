@@ -41,6 +41,7 @@
         let dat = await res.json()
         //url returned is /image/xxx.jpeg and svelte will only search in the public folder --> need 
         avatar = dat.image_url;
+        $displayName = dat.alias;
         console.log(avatar)
     }
 

@@ -121,6 +121,7 @@ def get_profile(request):
             return JsonResponse({'error': 'Image not found'}, status=404)
         url = {
             'image_url': "/media" +profile.picture.url if profile.picture.url else None,
+            'alias':profile.display_name
         }
         # print(type(profile.picture))
         # print(type(profile.picture.url))
