@@ -1,27 +1,15 @@
 import { writable, derived, get } from 'svelte/store';
 
 // AUTH STORE //
-export const csrf = writable('');
+export const csrf = writable(''); // Current CSRF token
 
-export const auth = writable(false);
+export const username = writable(''); // Username
 
-export const sessionid = writable('');
-
-export const username = writable('');
-
-export const password = writable('')
-
-export const data = writable()
+export const password = writable(''); // Password
 
 // export const userid = writable('')
 export const userid = writable(localStorage.getItem("userid") || "");
 userid.subscribe(val => localStorage.setItem("userid", val));
-
-//Kole: is this my work?
-// function getStoredUser() {
-//   const storedUser = localStorage.getItem('userid');
-//   return storedUser ? JSON.parse(storedUser) : { id: null, username: null };
-// }
 
 export const displayName = writable('')
 
@@ -45,13 +33,9 @@ export const uri = writable('')
 
 export const uri_ide = writable('')
 
-let ide_previous = ''
-
 export const ide_contents = writable()
 
 export const ide_state = writable("")
-
-export const isUnchanged = derived(ide_contents, ($ide_contents) => $ide_contents === ide_previous)
 
 export const user_store = writable([])
 

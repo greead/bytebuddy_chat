@@ -1,6 +1,6 @@
 <script>
 //  Imports
-    import {username, password, data, csrf, handleCsrf, sessionid, userid} from "../store.js"
+    import {username, password, csrf, handleCsrf, userid} from "../store.js"
     import {Link, navigate} from 'svelte-routing';
     // let loginError = null
     
@@ -33,10 +33,7 @@
 
         let dat = await res.json()
 
-        data.set(dat)
-        sessionid.set(dat.sessionid)
         userid.set(dat.userid)
-        console.log($data)
         console.log($userid)
         
         if (res.ok) {

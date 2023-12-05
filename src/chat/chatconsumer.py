@@ -22,7 +22,7 @@ class ChatConsumer(WebsocketConsumer):
         self.room_group_name = f'chat_{self.room_name}'
         self.room = ChatRoom.objects.get_or_create(name=self.room_name)[0]
         self.user = self.scope['user']
-        self.display_name = Profile.objects.filter(user=self.user)[0]
+        self.display_name = Profile.objects.filter(user=self.user)[0].display_name
 
         if self.user.is_anonymous:
             self.close_during_connect(code=4401)

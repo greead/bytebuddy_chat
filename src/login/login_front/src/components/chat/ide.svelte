@@ -7,7 +7,7 @@
     import "brace/ext/searchbox";
     import "brace/snippets/python"
     import "brace/ext/language_tools"
-    import { ide_contents, wss_ide, isUnchanged, username, ide_state } from "../store"
+    import { ide_contents, wss_ide, username, ide_state } from "../store"
     import { onDestroy, onMount } from "svelte";
 
     let editor: ace.Editor;

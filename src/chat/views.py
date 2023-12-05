@@ -87,7 +87,7 @@ def profile_view(request):
     user_profile = Profile.objects.get(pk=request.data['userid'])
 
     if user_profile:
-        # data = json.loads(request.body)
+        data = None
         userid= request.data['userid']
         name = request.data['display_name']
         bio = request.data['bio']

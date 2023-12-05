@@ -1,6 +1,6 @@
 <script>
     import Nav from "../navbar/nav.svelte"
-    import {displayName, bio,userid, csrf, handleCsrf, img, data} from "../store"
+    import {displayName, bio,userid, csrf, handleCsrf, img} from "../store"
     console.log($userid)
     import { onMount } from 'svelte';
 
