@@ -17,13 +17,17 @@ from rest_framework import status
 #function to get all users and add new user
 @api_view(['GET', 'POST'])
 def profile_list(request):
+    '''
+        API view for getting, creating, updating all user profiles
+    '''
+    # handle GET request
     if request.method == 'GET':
         users = Profile.objects.all()
         if users is not None:
             serializer = ProfileSerializer(users, many=True)
             return JsonResponse({"users":serializer.data})
         return JsonResponse("no data found")
-    
+    # handle POST request
     if request.method =='POST':
         serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
@@ -35,6 +39,9 @@ def profile_list(request):
 #perfom actions on user based on ID
 @api_view(['GET', 'PUT', 'DELETE'])      
 def UserprofilewithID(request,id):
+    '''
+        API view for getting, creating, updating user profile by id
+    '''
     try:
         user = Profile.objects.get(pk=id)
     except Profile.DoesNotExist:
@@ -58,7 +65,9 @@ def startapp(request):
 
 @api_view(['GET','PUT', 'POST'])
 def ide_view(request, chatroom_id):
-
+    '''
+        API view for getting, creating, updating and IDE by chat room id
+    '''
     ide = IDE.objects.get(pk=chatroom_id)
 
     if ide:
@@ -83,7 +92,9 @@ def ide_view(request, chatroom_id):
 @api_view(['POST'])
 
 def profile_view(request):
-
+    '''
+        API view to update user profile by user id
+    '''
     user_profile = Profile.objects.get(pk=request.data['userid'])
 
     if user_profile:

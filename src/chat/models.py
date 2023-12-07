@@ -24,6 +24,9 @@ class ChatRoom(models.Model):
 
 
 class Message(models.Model):
+    '''
+        Model for all messages sent through the chat rooms
+    '''
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     room = models.ForeignKey(to=ChatRoom, on_delete=models.CASCADE)
     content = models.CharField(max_length=512)
@@ -33,6 +36,9 @@ class Message(models.Model):
         return f'{self.user.username}: {self.content} [{self.timestamp}]'
 
 class Profile(models.Model):
+    '''
+        Model for all users profiles
+    '''
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=16)
     bio = models.CharField(max_length=256)
@@ -40,5 +46,8 @@ class Profile(models.Model):
 
 
 class IDE(models.Model):
+    '''
+        Model for synchronizing the IDE's in each chat room
+    '''
     code = models.CharField(default='', max_length=1000)
     name = models.CharField(max_length=128 )

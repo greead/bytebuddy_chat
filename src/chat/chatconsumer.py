@@ -40,11 +40,8 @@ class ChatConsumer(WebsocketConsumer):
         # add user as online
         self.room.online.add(self.user)
 
-        # send the user list to the newly joined user
-        # TODO: Get user profile info (display_name/image path) and return
+        # send active users and their profile pics
         active_users_and_images = []
-
-        print("ROOM ONLINE", self.room.online.all())
         for user in self.room.online.all():
              print("USER", user)
              qs = Profile.objects.filter(user=user)             
@@ -52,9 +49,6 @@ class ChatConsumer(WebsocketConsumer):
              if qs.exists():
                 active_users_and_images.append({"user":qs[0].display_name, "image": qs[0].picture.url})
                 print("PROFILE", {"user":qs[0].display_name, "image": qs[0].picture.url})
-
-
-
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
@@ -91,6 +85,9 @@ class ChatConsumer(WebsocketConsumer):
         ))
 
     def close_during_connect(self, code):
+        '''
+            Close websocket with specific code
+        '''
         self.accept()
         self.close(code=code)
 
@@ -123,13 +120,10 @@ class ChatConsumer(WebsocketConsumer):
 
         # send the updated user list
         active_users_and_images = []
-
         for user in self.room.online.all():
              qs = Profile.objects.filter(user=user)
              if qs.exists():
                 active_users_and_images.append({"user":qs[0].display_name, "image": qs[0].picture.url})
-
-
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
