@@ -47,14 +47,6 @@
       formData.append('display_name', $displayName);
     
       await handleCsrf()
-        let res = await fetch("http://localhost:8000/chat/image/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": $csrf,
-            },
-            credentials: "include",
-            body: formData,
-    })
       let res = await fetch("http://localhost:8000/chat/image/", {
           method: "POST",
           headers: {
