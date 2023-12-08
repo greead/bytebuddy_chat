@@ -1,11 +1,9 @@
-<script>
+<script> // Rooms bar Svelte component
     import Room from "./room.svelte";
-
-    export let rooms;
-    
+    export let rooms;    
 </script>
 
-
+<!-- Rooms bar contents -->
 <div >
     <p>Rooms</p>
     {#if rooms}
@@ -20,8 +18,6 @@
         color: white;
     }
     div {
-        /* padding: 1em;
-        width: 10vw; */
         display:flex;
         flex-direction: column;
     }

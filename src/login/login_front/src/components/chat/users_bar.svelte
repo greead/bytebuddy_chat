@@ -1,9 +1,9 @@
-<script>
+<script> // Users bar Svelte component
     import User from "./user.svelte";
-
     export let users;
 </script>
 
+<!-- Users bar contents -->
 <div >
     <p>Active Users</p>
     {#each users as user}
@@ -16,7 +16,6 @@
         color: white;
     }
     div {
-        /* padding: 8px; */
         width: 10vw;
     }
 </style>

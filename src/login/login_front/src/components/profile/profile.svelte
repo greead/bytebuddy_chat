@@ -1,10 +1,12 @@
-<script>
+<script> // Profile page Svelte component
     import Nav from "../navbar/nav.svelte"
     import {displayName, bio,userid, csrf, handleCsrf, img} from "../store"
     console.log($userid)
     import { onMount } from 'svelte';
 
     const basicProfile = 'media/images/basicProfile.png'
+
+    // Get the user's profile picture when the component is mounted.
     onMount(() => {
         getPfp()
     });
@@ -12,7 +14,10 @@
     let isEditable = false;
     let avatar;
 
-    //request to get profile picture when first loaded in
+    /**
+     * Event handler to fetch the user's profile picture.
+     * @param event The event caller.
+     */
     async function getPfp(event) {
         const res = await fetch(`http://localhost:8000/profile?userid=${$userid}`);
 
@@ -21,15 +26,20 @@
         $displayName = dat.alias;
     }
 
-    //toggle editing function for alias and profile picture input
+    /**
+     * Function to toggle the components on.
+     */
     function toggleEditable() {
       isEditable = true;
     }
 
-    //request to upload user data on submit
+    /**
+     * Event handler to submit the user's changes to their profile.
+     */
     async function handleSubmit() {
+      console.log('Form submitted!');
+      isEditable = false;
 
-      isEditable = false; 
       const formData = new FormData();
       formData.append('userid',$userid)
       formData.append('image', $img);
@@ -37,6 +47,14 @@
       formData.append('display_name', $displayName);
     
       await handleCsrf()
+        let res = await fetch("http://localhost:8000/chat/image/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": $csrf,
+            },
+            credentials: "include",
+            body: formData,
+    })
       let res = await fetch("http://localhost:8000/chat/image/", {
           method: "POST",
           headers: {
@@ -47,10 +65,14 @@
       })
     }
 
-    //on uploading profile picture 
+    /**
+     * Event handler to handler a user attempting to add a new image to their profile.
+     * @param event The event caller.
+     */
     function handleFileInputChange(event) {
         const fileInput = event.target;
         let image = fileInput.files[0];
+
         let reader = new FileReader();
         reader.onload = function (e) {
         // Set the source of the image to the data URL obtained from FileReader
@@ -62,23 +84,22 @@
 
 </script>
 
+<!-- Profile page contents -->
 <Nav />
 
+<!-- Profile editing form -->
 <div id= "full-page">
     <img id="avatar" class="flex-item" src={avatar} alt="Profile">
     <div class="form flex-item">
       <div class="form-inside">
-        <lable for="displayName">Alias </lable>
+        <label for="displayName">Alias </label>
         <input bind:value={$displayName} type="text" id="displayName" name="displayName" style="input_item" disabled= { !isEditable}>
       </div>
       <div class="form-inside">
-        <!-- <lable for="bio">Bio</lable>
-        <textarea bind:value={$bio} id="bio" name="bio" disabled= { !isEditable}></textarea> -->
       </div>
       <div class="form-inside file-upload-box">
-            <lable>Avatar</lable>
+            <label for="fileInput">Avatar</label>
             <input class="choose_file" type="file" id="fileInput" accept=".png, .jpg, .jpeg" on:change={handleFileInputChange} disabled= { !isEditable}/>
-            <!-- <span class="file-upload-label">{selectedFile ? selectedFile.name : 'No file chosen'}</span> -->
       </div>
       {#if isEditable}
         <button on:click={handleSubmit}>Submit</button>
@@ -86,8 +107,6 @@
         <button on:click={toggleEditable}>Edit</button>
       {/if}
     </div>
-    
-    
 </div>
 
 <style>
@@ -108,10 +127,8 @@
         }
 
     .flex-item{
-        /* margin:3vw; */
         margin-top: 2vw;
         margin-bottom: 1vw;
-        /* height:20vw; */
     }
 
     .choose_file {
@@ -127,9 +144,11 @@
         font-family: 'VT323';
     }
 
-    lable{
+    label{
       border: 2 em;
       border-color: black;
+      color:white;
+      padding-left:5%;
     }
 
     .form-inside{
@@ -142,10 +161,6 @@
         color:white;
         font-size:2em;
     }
-  lable{
-      color:white;
-      padding-left:5%;
-    }
 
     input{
         font-family: 'VT323';
@@ -156,25 +171,11 @@
         border-radius:.3em;
         padding-left: 1.1%;
     }
-
-    textarea{
-        padding-left: 1.1%;
-        font-family: 'VT323';
-        width: 18vw;
-        height: 10vw;
-        font-size: 0.75em;
-        resize: horizontal;
-        line-height: 1;
-        overflow-x: scroll;
-        margin-right:5%;
-        border-radius:.3em;
-}
+    
     #fileInput{
     
       font-size: 0.5em;
       padding-right: 0.5em;
-      /* right: 0;
-      top: 0; */
     }
 
     button{

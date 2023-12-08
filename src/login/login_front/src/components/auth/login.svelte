@@ -1,20 +1,25 @@
-<script>
+<script> // Login page Svelte component.
 //  Imports
     import {username, password, csrf, handleCsrf, userid} from "../store.js"
     import {Link, navigate} from 'svelte-routing';
     // let loginError = null
     
+
     /**
-     * Event handler for the form submit event, makes an api call to the login api using
-     * the information given in the form inputs.
-     * @param event The event caller
-    */
+     * Event handler for when the Enter button is pressed to call the handle login function.
+     * @param event The event caller.
+     */
     function handleEnterPressed(event) {
         if ((event.key) === 'Enter') {
             handleLogin();
         }
     }
 
+    /**
+     * Event handler for the form submit event, makes an api call to the login api using
+     * the information given in the form inputs.
+     * @param event The event caller.
+    */
     async function handleLogin(event) {
         await handleCsrf()
         console.log($csrf)
@@ -42,11 +47,19 @@
         
     }
 
+    /**
+     * Event handler for highlighting a button when hovered over.
+     * @param event The event caller.
+     */
     function hoverOver(event){
     event.target.style.color= "#0900ff";
     event.target.style.backgroundColor="white";
     }
   
+    /**
+     * Event handler for un-highlighting a button when hovered over.
+     * @param event The event caller.
+     */
     function hoverOut(event){
     event.target.style.color= "white";
     event.target.style.backgroundColor="#0900ff";
@@ -54,6 +67,7 @@
 
 </script>
 
+<!-- Login page content -->
 <h2>Welcome to</h2>
 <Link to="/">
     <h1>ByteBuddy</h1>
@@ -132,12 +146,5 @@
         font-size: 3em;
         margin-top:4em;
     }
-
-    /* .error-message{
-        font-family: "VT323";
-        font-size:2em;
-        color:red;
-
-    } */
 
 </style>

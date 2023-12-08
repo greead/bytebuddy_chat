@@ -12,6 +12,7 @@
 
     let editor: ace.Editor;
 
+    // Set up the Brace editor when the component is mounted.
     onMount(() => {
         editor = ace.edit('editor');
         let options = {"fontSize":16, "scrollPastEnd":true, enableBasicAutocompletion: true, enableSnippets: true, enableLiveAutocompletion: true,}
@@ -21,6 +22,10 @@
         editor.on('change', onChangeHandler)
         editor.$blockScrolling = Infinity
 
+        // Subscribe to the ide_contents store (observer).
+        // When the IDE contents is updated with a new delta, temporarily
+        // deactivate the onChange listeners, apply the deltas, then reactivate the listeners.
+        // This should update each time a another user types in the IDE.
         ide_contents.subscribe((delta) => {
             if(delta) {
                 console.log('FROM SUB', delta)
@@ -33,6 +38,10 @@
             } 
         })
 
+        // Subscribe to the ide_state store (observer).
+        // When the IDE state is updated with a new overall state, temporarily
+        // deactivate the onChange listeners, set the contents of the editor, then reactivate
+        // the listeners. This should update when a user first connects to the IDE.
         ide_state.subscribe((state) => {
             editor.off('change', onChangeHandler)
             editor.setValue(state)
@@ -40,13 +49,16 @@
         })
     })
 
-
-
+    /**
+     * Event handler for the IDE onChange event. Sends the deltas over the websocket.
+     * @param event The event caller (IDE).
+     */
     function onChangeHandler(event) {
         $wss_ide.sendMessage({...event, user:$username, current_state:editor.getValue()})
         console.log("CHANGE", event)        
     }
 
+    // Disconnect from the IDE websocket when the user leaves the IDE page.
     onDestroy(() => {
         $wss_ide.disconnectWebSocket()
     })
@@ -55,6 +67,8 @@
     
 </script>
 
+<!-- IDE contents -->
+<!-- Div to contain the Brace editor -->
 <div id="editor"></div>
 
 <style>

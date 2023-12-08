@@ -1,17 +1,26 @@
-<script>
+<script> // Landing page Svelte component.
     import {Link} from 'svelte-routing';
-    // let hover = true;
+
+    /**
+     * Function to highlight the button when hovered over
+     * @param event The triggered event.
+     */
     function hoverOver(event){
         event.target.style.color= "#0900ff";
         event.target.style.backgroundColor="white";
     }
 
+    /**
+     * Function to stop highlighting a button when hovered over
+     * @param event The triggered event.
+     */
     function hoverOut(event){
         event.target.style.color= "white";
         event.target.style.backgroundColor="#0900ff";
     }
 </script>
 
+<!-- Landing page content -->
 <h2>Welcome to</h2>
 <h1>ByteBuddy</h1>
 <h3>The Retro Chatroom for Purdue Fort Wayne students! </h3>
@@ -20,6 +29,8 @@
     help or answers, we've got you covered as ByteBuddy provides in-chat compiler to turn your text to codes. 
     Join ChatRoomHub today and be part of the conversation.
 </div>
+
+<!-- Landing page links -->
 <div  id="buttons">
     <Link to="/login">
         <button on:mouseenter={hoverOver} on:mouseleave={hoverOut}>Log In</button>

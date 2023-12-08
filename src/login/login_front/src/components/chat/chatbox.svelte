@@ -1,50 +1,64 @@
-<script>
+<script> // Chatbox Svelte component
     import { onDestroy, onMount } from "svelte";
     import { uri, wss, message_list } from "../store";
     import Message from "./message.svelte";
 
     let messageArea;
 
+    /**
+     * Function that scrolls the message area to the bottom.
+     */
     function scrollMessageAreaToBottom() {
         if (messageArea) {
         messageArea.scrollTo({
             top: messageArea.scrollHeight,
-            behavior: 'smooth', // You can change this to 'auto' for instant scrolling
+            behavior: 'smooth',
         });
         }
     } 
 
+    /**
+     * Event handler for pressing the Enter key to send a message.
+     * @param event The event caller.
+     */
     function handleEnterPressed(event) {
         if ((event.key) === 'Enter') {
-            handleMessage();
-            
+            handleMessage();            
         }
     }
 
     let inputMessage = ""
 
+    // Scroll to the bottom of the chat when the component is mounted.
     onMount(() => {
         scrollMessageAreaToBottom()
     })
 
+    // Disconnect from the chat consumer when leaving the chat page.
     onDestroy(() => {
         $wss.disconnectWebSocket()
     })
 
+    // Subscribe to the chat consumer store (observer).
+    // Update the message list with the new messages when a new message is received.
     $wss.subscribe((store) => {
         console.log("msg in sub", store.message)
         message_list.update((values) => ([...values, store.message]))
     })
 
+    /**
+     * Event handler for sending a message. Scrolls to the bottom of the chatbox.
+     * @param event The event caller.
+     */
     async function handleMessage(event) {
-        await $wss.sendMessage(inputMessage)
-        
+        await $wss.sendMessage(inputMessage)        
         scrollMessageAreaToBottom()
         inputMessage = ''
     }
 
 </script>
 
+<!-- Chatbox contents -->
 <div class="chatbox">
     <div id="messageArea" class="messageArea">        
         <ul role="listbox" bind:this={messageArea}>

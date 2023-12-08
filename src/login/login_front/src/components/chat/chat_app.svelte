@@ -1,4 +1,4 @@
-<script>
+<script> // Chat app Svelte component
     import Logout from "../auth/logout.svelte";
     import Chatbox from "./chatbox.svelte";
     import RoomsBar from "./rooms_bar.svelte";
@@ -10,36 +10,37 @@
     let roomsList = []
     let profilesList = []
     console.log($userid)
+
+    // When the component is mounted, fetch the rooms
     onMount(() => {
         getRoomsList()
-        // getProfilesList()
     })
 
+    /**
+     * Get the list of rooms for the rooms bar.
+     */
     async function getRoomsList() {
         let apiRooms = []
-        // TODO fetch rooms from API
-        roomsList = ["Home", "Java Cafe", "Python Burrow", "JavaScript Torture Chamber"] // <-- Placeholder
+        // Future work: Fetch rooms from API and allow users to create and delete their own rooms.
+        roomsList = ["Home", "Java Cafe", "Python Burrow", "JavaScript Torture Chamber"]
     }
 
 </script>
 
-
+<!-- Chat app content -->
 <div class="system">
     <Nav/>
-    <!-- <div class="chatbox"> -->
-        <div class="main">
-            <RoomsBar rooms={roomsList}/>
-            <div class="divchatbox">
-                <h2>{$current_room}</h2>
-                {#if $current_room != "Home"}
-                    <Ide/>
-                {/if}
-                <Chatbox/>
-            </div>
-            <UsersBar users={$user_store}/>
+    <div class="main">
+        <RoomsBar rooms={roomsList}/>
+        <div class="divchatbox">
+            <h2>{$current_room}</h2>
+            {#if $current_room != "Home"}
+                <Ide/>
+            {/if}
+            <Chatbox/>
         </div>
-    
-    <!-- </div> -->
+        <UsersBar users={$user_store}/>
+    </div>
 </div>
 
 
@@ -72,9 +73,6 @@
         justify-content: space-evenly;
         height: 100%;
         margin-top:1em;
-        /* border-color: black;
-        border-radius:5em;
-        border: 0.1em solid #eeeeee;  */
     }
    
 </style>

@@ -14,6 +14,7 @@
   export let url="";
 </script>
 
+<!-- Imported stylesheets -->
 <svelte:head>
   <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Rubik+Pixels" rel="stylesheet">
@@ -21,14 +22,10 @@
   <link href="https://fonts.cdnfonts.com/css/phatone" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/mastodontus" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/zuber-future" rel="stylesheet"> 
-  <!-- <link rel="stylesheet" href="https://unpkg.com/98.css" />      -->
 </svelte:head>
 
+<!-- Routing setup -->
 <Router {url}>
-  <!-- <nav>
-    <Link to="/">Login</Link>
-    <Link to="/signup">Signup</Link>
-  </nav> -->
     <Route path="/" component={Landing} />
     <Route path="/signup/" component={Signup} />
     <Route path="/login/" component={Login} />

@@ -1,12 +1,18 @@
-<script>
+<script> // Signup page Svelte component
     import {username, password, handleCsrf, csrf} from "../store.js"
     import {Link, navigate} from "svelte-routing";
     let signupError = null
     let confirmPassword = '';
+
+    // Reactive validation
     $: isMatching = $password === confirmPassword
     $: isDisabled = $password == '' || $username == '' || !isMatching
     $: console.log($password)
 
+    /**
+     * Event handler for calling the handle signup when Enter is pressed.
+     * @param event The event caller.
+     */
     function handleEnterPressed(event) {
         if ((event.key) === 'Enter') {
             handleSignUp();
@@ -19,15 +25,12 @@
      * @param event The event caller
     */
     async function handleSignUp(event){
-        event.preventDefault();
         signupError = null
         if($password != confirmPassword){
             signupError = "Passwords do not match"
         }
         else{
         await handleCsrf()
-        // console.log('csrftoken:', $csrf)
-        // Make a POST request to the signup api by passing the user object in the store
         let reponse = await fetch('http://localhost:8000/signup/', {
             method: 'POST',
             headers: {
@@ -51,6 +54,7 @@
     }   
 </script>
 
+<!-- Signup page content -->
 <h2>Welcome to</h2>
 <Link to="/">
     <h1>ByteBuddy</h1>
@@ -60,26 +64,26 @@
     <div class="error-message">{signupError}</div>
 {/if}
 
-    <div id="flexBox">
-        <div class="idky">
-            <lable for="email">Email: </lable>
-            <input bind:value={$username} type="email" id="email" name="email" style="input_item" on:keypress={handleEnterPressed}>
-        </div>
-        <div class="idky">
-            <lable for="pw">Password: </lable>
-            <input bind:value={$password} type="password" id="pw" name="pw" on:keypress={handleEnterPressed}>
-        </div>
-        <div class="idky">
-            <lable for="cpw">Confirm Password: </lable>
-            <input bind:value={confirmPassword} type="password" id="cpw" name="cpw" on:keypress={handleEnterPressed}>
-        </div>
-        
+<div id="flexBox">
+    <div class="idky">
+        <lable for="email">Email: </lable>
+        <input bind:value={$username} type="email" id="email" name="email" style="input_item" on:keypress={handleEnterPressed}>
     </div>
-    {#if !isMatching}
-        <p class="matching">Passwords do not match.</p>
-    {/if}
-    <button id="button" on:click={handleSignUp} disabled={isDisabled} class:disabled={isDisabled}>Sign Up</button>
-    <p>Already have an account? Click <Link to="/login"> here </Link> to log in!</p>
+    <div class="idky">
+        <lable for="pw">Password: </lable>
+        <input bind:value={$password} type="password" id="pw" name="pw" on:keypress={handleEnterPressed}>
+    </div>
+    <div class="idky">
+        <lable for="cpw">Confirm Password: </lable>
+        <input bind:value={confirmPassword} type="password" id="cpw" name="cpw" on:keypress={handleEnterPressed}>
+    </div>
+    
+</div>
+{#if !isMatching}
+    <p class="matching">Passwords do not match.</p>
+{/if}
+<button id="button" on:click={handleSignUp} disabled={isDisabled} class:disabled={isDisabled}>Sign Up</button>
+<p>Already have an account? Click <Link to="/login"> here </Link> to log in!</p>
 
 <style>
 
@@ -125,9 +129,6 @@
     }
 
     button{
-        /* width:8em; */
-        /* font-size:1.2em; */
-        /* padding-left:0em; */
         margin-top:1em;
         align-items: center;
         border-color: white;
