@@ -27,9 +27,7 @@
         else{
         await handleCsrf()
         // console.log('csrftoken:', $csrf)
-        // This is to fix an issue where CSRF cookie not set (basically csrf token is different between the one returned from Django server and the one in browser cookie)
-        // document.cookie = 'csrftoken=' + $csrf;
-            // Make a POST request to the signup api by passing the user object in the store
+        // Make a POST request to the signup api by passing the user object in the store
         let reponse = await fetch('http://localhost:8000/signup/', {
             method: 'POST',
             headers: {
@@ -51,22 +49,6 @@
         }
     }
     }   
-
-    // function hoverOver(event){
-    //     if (!isDisabled) {
-    //         event.target.style.color= "#0900ff";
-    //         event.target.style.backgroundColor="white";
-    //     }
-    // }
-        
-  
-    // function hoverOut(event){
-    //     if (!isDisabled) {
-    //         event.target.style.color= "white";
-    //         event.target.style.backgroundColor="#0900ff";
-    //     }
-    // }   
-
 </script>
 
 <h2>Welcome to</h2>
@@ -78,8 +60,6 @@
     <div class="error-message">{signupError}</div>
 {/if}
 
-
-<!-- <form on:submit={handleForm}> -->
     <div id="flexBox">
         <div class="idky">
             <lable for="email">Email: </lable>
@@ -98,11 +78,8 @@
     {#if !isMatching}
         <p class="matching">Passwords do not match.</p>
     {/if}
-    <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <!-- on:mouseenter={hoverOver} on:mouseout={hoverOut}  -->
     <button id="button" on:click={handleSignUp} disabled={isDisabled} class:disabled={isDisabled}>Sign Up</button>
     <p>Already have an account? Click <Link to="/login"> here </Link> to log in!</p>
-<!-- </form> -->
 
 <style>
 

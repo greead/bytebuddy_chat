@@ -12,86 +12,50 @@
     let isEditable = false;
     let avatar;
 
-    // async function getPfp(event) {
-    //     await handleCsrf()
-    //     // console.log($csrf)
-    //     // console.log('csrftoken:', $csrf)
-    //     console.log($userid)
-    //     let res = await fetch("http://localhost:8000/profilePicture/", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "X-CSRFToken": $csrf,
-    //         },
-    //         credentials: "include",
-    //         body: JSON.stringify({userid: $userid}),
-    // })
-
-    //     let dat = await res.json()
-    //     // console.log(dat)
-    //     // if ('image_url' in data) {
-    //         dat.image_url = dat.image_url.replace('/media', '../../../../../media');
-    //     // }
-    //     console.log(dat)
-    // }
-
+    //request to get profile picture when first loaded in
     async function getPfp(event) {
         const res = await fetch(`http://localhost:8000/profile?userid=${$userid}`);
 
         let dat = await res.json()
-        //url returned is /image/xxx.jpeg and svelte will only search in the public folder --> need 
         avatar = dat.image_url;
         $displayName = dat.alias;
-        console.log(avatar)
     }
 
+    //toggle editing function for alias and profile picture input
     function toggleEditable() {
       isEditable = true;
     }
 
+    //request to upload user data on submit
     async function handleSubmit() {
-      // Add your form submission logic her
-      console.log('Form submitted!');
-      isEditable = false; // After submission, make the form non-editable again
 
-      // let binaryString = String.fromCharCode.apply(null, new Uint8Array($img));
-      // let base64Data = btoa(binaryString);
-
+      isEditable = false; 
       const formData = new FormData();
       formData.append('userid',$userid)
       formData.append('image', $img);
       formData.append('bio', $bio);
       formData.append('display_name', $displayName);
-      // console.log($displayName)
-      // console.log($bio)
-      // console.log($img)
     
       await handleCsrf()
-        // console.log($csrf)
-        // console.log('csrftoken:', $csrf)
-        // console.log($userid)
-        let res = await fetch("http://localhost:8000/chat/image/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": $csrf,
-            },
-            credentials: "include",
-            body: formData,
-    })
+      let res = await fetch("http://localhost:8000/chat/image/", {
+          method: "POST",
+          headers: {
+              "X-CSRFToken": $csrf,
+          },
+          credentials: "include",
+          body: formData,
+      })
     }
 
+    //on uploading profile picture 
     function handleFileInputChange(event) {
         const fileInput = event.target;
         let image = fileInput.files[0];
-        // console.log($img)
-
-        // console.log(selectedFile)
         let reader = new FileReader();
         reader.onload = function (e) {
         // Set the source of the image to the data URL obtained from FileReader
             img.set(String(e.target.result));
             avatar = e.target.result;
-            // console.log($img)xs
       };
             reader.readAsDataURL(image);
   }
@@ -100,31 +64,17 @@
 
 <Nav />
 
-<!-- To-do: need to add a box for profile picture and position things around -->
 <div id= "full-page">
-  
-    <!-- <img id="avatar" src={"http://localhost:5173/" + avatar} alt="img"> -->
- 
-    <!-- {#if avatar} -->
-      <img id="avatar" class="flex-item" src={avatar} alt="Profile">
-    <!-- {:else} -->
-      <!-- <img id="avatar" class="flex-item" src={"http://localhost:5173/" + basicProfile} alt="Profile"> -->
-    <!-- {/if} -->
-    
-    <!-- <form on:submit|preventDefault={handleSubmit} class="flex-item"> -->
+    <img id="avatar" class="flex-item" src={avatar} alt="Profile">
     <div class="form flex-item">
-      <!-- Your form fields go here -->
       <div class="form-inside">
         <lable for="displayName">Alias </lable>
         <input bind:value={$displayName} type="text" id="displayName" name="displayName" style="input_item" disabled= { !isEditable}>
-    </div>
-   
-      
+      </div>
       <div class="form-inside">
         <!-- <lable for="bio">Bio</lable>
         <textarea bind:value={$bio} id="bio" name="bio" disabled= { !isEditable}></textarea> -->
       </div>
-
       <div class="form-inside file-upload-box">
             <lable>Avatar</lable>
             <input class="choose_file" type="file" id="fileInput" accept=".png, .jpg, .jpeg" on:change={handleFileInputChange} disabled= { !isEditable}/>
@@ -135,7 +85,6 @@
       {:else}
         <button on:click={toggleEditable}>Edit</button>
       {/if}
-    <!-- </form> -->
     </div>
     
     
